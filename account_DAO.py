@@ -1,9 +1,10 @@
-# boook dao 
-# this is a demonstration a data layer that connects to a datbase
+# account dao 
+# This is a demonstration a data layer that connects to a datbase
 
 import mysql.connector
 import wsaa.deploytopythonanywhere.dbconfigpa as cfg
-class BookDAO:
+
+class accountDAO:
     connection=""
     cursor =''
     host=       ''
@@ -28,59 +29,59 @@ class BookDAO:
         return self.cursor
 
     def closeAll(self):
-        self.connection.close()
         self.cursor.close()
-         
-    def getAll(self):
+        self.connection.close()
+        
+    def getAllAccounts(self):
         cursor = self.getcursor()
-        sql="select * from book"
+        sql="select * from account"
         cursor.execute(sql)
         results = cursor.fetchall()
         returnArray = []
         #print(results)
         for result in results:
             #print(result)
-            returnArray.append(self.convertToDictionary(result))
+            returnArray.append(self.convertAccountToDictionary(result))
         
         self.closeAll()
         return returnArray
 
-    def findByID(self, id):
+    def findAccountByID(self, id):
         cursor = self.getcursor()
-        sql="select * from book where id = %s"
+        sql="select * from account where account_id = %s"
         values = (id,)
 
         cursor.execute(sql, values)
         result = cursor.fetchone()
-        returnvalue = self.convertToDictionary(result)
+        returnvalue = self.convertAccountToDictionary(result)
         self.closeAll()
         return returnvalue
 
-    def create(self, book):
+    def createAccount(self, account):
         cursor = self.getcursor()
-        sql="insert into book (title,author, price) values (%s,%s,%s)"
-        values = (book.get("title"), book.get("author"), book.get("price"))
+        sql="insert into account (account_name,website) values (%s,%s)"
+        values = (account.get("account_name"), account.get("website"))
         cursor.execute(sql, values)
 
         self.connection.commit()
         newid = cursor.lastrowid
-        book["id"] = newid
+        account["account_id"] = newid
         self.closeAll()
-        return book
+        return account
 
 
-    def update(self, id, book):
+    def update(self, id, account):
         cursor = self.getcursor()
-        sql="update book set title= %s,author=%s, price=%s  where id = %s"
-        print(f"update book {book}")
-        values = (book.get("title"), book.get("author"), book.get("price"),id)
+        sql="update account set account_name= %s,website=%s WHERE account_id = %s"
+        print(f"update account {account}")
+        values = (account.get("account_name"), account.get("website"), id)
         cursor.execute(sql, values)
         self.connection.commit()
         self.closeAll()
         
     def delete(self, id):
         cursor = self.getcursor()
-        sql="delete from book where id = %s"
+        sql="delete from account where account_id = %s"
         values = (id,)
 
         cursor.execute(sql, values)
@@ -90,14 +91,13 @@ class BookDAO:
         
         #print("delete done")
 
-    def convertToDictionary(self, resultLine):
-        attkeys=['id','title','author', "price"]
-        book = {}
+    def convertAccountToDictionary(self, resultLine):
+        attkeys=['account_id','account_name','website']
+        account = {}
         currentkey = 0
         for attrib in resultLine:
-            book[attkeys[currentkey]] = attrib
+            account[attkeys[currentkey]] = attrib
             currentkey = currentkey + 1 
-        return book
+        return account      
 
-        
-bookDAO = BookDAO()
+accountDAOInstance = accountDAO()
