@@ -53,9 +53,13 @@ class accountDAO:
 
         cursor.execute(sql, values)
         result = cursor.fetchone()
-        returnvalue = self.convertAccountToDictionary(result)
+        #returnvalue = self.convertAccountToDictionary(result)
         self.closeAll()
-        return returnvalue
+        if result:
+            return self.convertAccountToDictionary(result)
+        else:
+            return None
+        #return returnvalue
 
     def createAccount(self, account):
         cursor = self.getcursor()
