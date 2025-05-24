@@ -5,7 +5,7 @@ from account_DAO import accountDAO
 dao = accountDAO() # create an instance
 
 # Get all accounts
-print("\nTesting all accounts function:")
+print("\nTesting all account functions:")
 print(dao.getAllAccounts())
 
 # Create a new account
@@ -27,8 +27,6 @@ print(dao.findAccountByID(new_id))
 # Delete the account
 print("\nTesting account deletion by ID function:")
 dao.deleteAccount(new_id)
-#deleted = dao.findAccountByID(new_id)
-#print("Should return None (if deleted):", deleted)
 
 # FInal check
 print("\nFinal account list:")

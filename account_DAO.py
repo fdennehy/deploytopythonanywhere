@@ -78,6 +78,7 @@ class accountDAO:
         cursor.execute(sql, values)
         self.connection.commit()
         self.closeAll()
+        return account
         
     def deleteAccount(self, id):
         cursor = self.getcursor()
