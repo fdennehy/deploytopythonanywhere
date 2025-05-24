@@ -73,7 +73,6 @@ class accountDAO:
     def updateAccount(self, id, account):
         cursor = self.getcursor()
         sql="update account set account_name= %s,website=%s WHERE account_id = %s"
-        print(f"update account {account}")
         values = (account.get("account_name"), account.get("website"), id)
         cursor.execute(sql, values)
         self.connection.commit()
