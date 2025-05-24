@@ -2,7 +2,7 @@
 # This is a demonstration a data layer that connects to a datbase
 
 import mysql.connector
-import wsaa.deploytopythonanywhere.dbconfigpa as cfg
+import dbconfigpa as cfg
 
 class accountDAO:
     connection=""
