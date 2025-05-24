@@ -68,8 +68,6 @@ def update(id):
     accountDAOInstance.update(id,found_account)
     return jsonify(found_account)
         
-
-    
 # Delete an account by id
 @app.route('/accounts/<int:id>' , methods=['DELETE'])
 @cross_origin()
