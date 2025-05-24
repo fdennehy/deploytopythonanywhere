@@ -4,7 +4,7 @@ from account_DAO import accountDAO
 
 # Get all accounts
 print("Testing all accounts function:")
-print(accountDAO.getAllAccounts())
+print(accountDAO.getAllAccounts(self))
 
 # Create a new account
 print("Testing account creation function:")
