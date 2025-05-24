@@ -10,9 +10,9 @@ print(dao.getAllAccounts())
 
 # Create a new account
 print("\nTesting account creation function:")
-new_account = {"account_name": "Test Corp", "website": "testcorp.com"}
-new_id = dao.createAccount(new_account)
-print("Created account with ID:", new_id)
+new_account = dao.createAccount({"account_name": "Test Corp", "website": "testcorp.com"})
+new_id = new_account['account_id']
+print(f"Created account {new_account} with ID: {new_id}")
 
 # Find by ID
 print("\nTesting find account by ID function:")
