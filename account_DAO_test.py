@@ -20,8 +20,8 @@ print(dao.findAccountByID(new_id))
 
 # Update the account
 print("\nTesting update account by ID function:")
-dao.updateAccount({"id": new_id, "account_name": "Updated Corp", "website": "updatedcorp.com"})
-print("Updated account with ID:", new_id)
+updated_account = dao.updateAccount(new_id, {"account_name": "Updated Corp", "website": "updatedcorp.com"})
+print(f"Updated account {updated_account} with ID: {new_id}")
 print(dao.findAccountByID(new_id))
 
 # Delete the account
