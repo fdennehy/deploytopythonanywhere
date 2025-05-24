@@ -2,27 +2,34 @@
 
 from account_DAO import accountDAO
 
+dao = accountDAO() # create an instance
+
 # Get all accounts
 print("Testing all accounts function:")
-print(accountDAO.getAllAccounts(self))
+print(dao.getAllAccounts())
 
 # Create a new account
-print("Testing account creation function:")
+print("\nTesting account creation function:")
 new_account = {"account_name": "Test Corp", "website": "testcorp.com"}
-new_id = accountDAO.createAccount(new_account)
+new_id = dao.createAccount(new_account)
 print("Created account with ID:", new_id)
 
 # Find by ID
-print("Testing find account by ID function:")
-print(accountDAO.findAccountByID(new_id))
+print("\nTesting find account by ID function:")
+print(dao.findAccountByID(new_id))
 
 # Update the account
-print("Testing update account by ID function:")
-accountDAO.update({"id": new_id, "account_name": "Updated Corp", "website": "updatedcorp.com"})
+print("\nTesting update account by ID function:")
+dao.updateAccount({"id": new_id, "account_name": "Updated Corp", "website": "updatedcorp.com"})
 print("Updated account with ID:", new_id)
+print(dao.findAccountByID(new_id))
 
 # Delete the account
 print("Testing account deletion by ID function:")
-accountDAO.delete(new_id)
-print(accountDAO.findAccountByID(new_id))
-print(accountDAO.getAllAccounts())
+dao.deleteAccount(new_id)
+deleted = dao.findAccountByID(new_id)
+print("Should return None (if deleted):", deleted)
+
+# FInal check
+print("\nFinal account list:")
+print(dao.getAllAccounts())

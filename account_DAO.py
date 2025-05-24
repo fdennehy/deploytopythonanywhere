@@ -70,7 +70,7 @@ class accountDAO:
         return account
 
 
-    def update(self, id, account):
+    def updateAccount(self, id, account):
         cursor = self.getcursor()
         sql="update account set account_name= %s,website=%s WHERE account_id = %s"
         print(f"update account {account}")
@@ -79,7 +79,7 @@ class accountDAO:
         self.connection.commit()
         self.closeAll()
         
-    def delete(self, id):
+    def deleteAccount(self, id):
         cursor = self.getcursor()
         sql="delete from account where account_id = %s"
         values = (id,)
