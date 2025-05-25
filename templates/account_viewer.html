@@ -82,12 +82,13 @@
   }
 
   form {
-    background: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 12px rgba(0,0,0,0.08);
-    height: 100%;  /* Make form fill the tile */
+    background: transparent;
+    padding: 0;               
+    border-radius: 0;
+    box-shadow: none;
+    height: auto;
     box-sizing: border-box;
+    flex-grow: 1;  
   }
 
   /* Updated formsContainer: use CSS Grid with fixed 3 equal columns on wider screens */
@@ -106,11 +107,8 @@
     padding: 20px 25px;
     box-sizing: border-box;
     height: 100%;
-  }
-
-  /* Fix Get/Delete tile background & padding */
-  #getDeleteAccountTile {
-    /* ensure same styling as others */
+    display: flex;
+    flex-direction: column;
   }
 
   #statusMessage {
