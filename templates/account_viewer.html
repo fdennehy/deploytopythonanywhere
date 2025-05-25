@@ -4,25 +4,49 @@
     <meta charset="UTF-8">
     <title>CSM Tool - Account Viewer</title>
 <script>
-        const BASE_URL = "https://fdennehy.pythonanywhere.com/accounts";
+    const BASE_URL = "https://fdennehy.pythonanywhere.com/accounts";
 
-        async function getAllAccounts() {
-            const response = await fetch(BASE_URL);
-            const data = await response.json();
-            document.getElementById("output").textContent = JSON.stringify(data, null, 2);
-        }
+    async function getAllAccounts() {
+        const response = await fetch(BASE_URL);
+        const data = await response.json();
+        document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+    }
 
-        async function insertDummyAccounts() {
-            const response = await fetch(`${BASE_URL}/dummy`, { method: "POST" });
-            const data = await response.json();
-            document.getElementById("output").textContent = JSON.stringify(data, null, 2);
-        }
+    async function insertDummyAccounts() {
+        const response = await fetch(`${BASE_URL}/dummy`, { method: "POST" });
+        const data = await response.json();
+        document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+    }
 
-        async function deleteAllAccounts() {
-            const response = await fetch(`${BASE_URL}/wipe`, { method: "DELETE" });
-            const data = await response.json();
-            document.getElementById("output").textContent = JSON.stringify(data, null, 2);
-        }
+    async function deleteAllAccounts() {
+        const response = await fetch(`${BASE_URL}/wipe`, { method: "DELETE" });
+        const data = await response.json();
+        document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function createAccount(event) {
+    event.preventDefault();
+
+    const account = {
+        name: document.getElementById("name").value,
+        website: document.getElementById("website").value,
+        revenue: document.getElementById("revenue").value,
+        region: document.getElementById("region").value
+    };
+
+    const response = await fetch(BASE_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(account)
+    });
+
+    const data = await response.json();
+    document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+
+    // Clear form
+    document.getElementById("createAccountForm").reset();
+    }
+
     </script>
 </head>
 <body>
@@ -32,7 +56,27 @@
     <button onclick="insertDummyAccounts()">Insert Dummy Data</button>
     <button onclick="deleteAllAccounts()">Delete All Accounts</button>
 
-    <h2>Response Output:</h2>
+
+    <h2>Create New Account</h2>
+    <form id="createAccountForm" onsubmit="createAccount(event)">
+        <label>Name: <input type="text" id="name" required></label><br>
+        <label>Website: <input type="url" id="website" required></label><br>
+        <label>Revenue: <input type="number" id="revenue" required></label><br>
+        <label>Region: 
+            <select id="region">
+                <option>North America</option>
+                <option>South America</option>
+                <option>Europe</option>
+                <option>Asia</option>
+                <option>Africa</option>
+                <option>Australia</option>
+                <option>Antarctica</option>
+            </select>
+        </label><br>
+        <button type="submit">Create Account</button>
+    </form>
+
     <pre id="output" style="background-color: #f4f4f4; padding: 10px;"></pre>
+
 </body>
 </html>
