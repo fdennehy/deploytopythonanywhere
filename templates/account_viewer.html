@@ -212,8 +212,7 @@
 
     async function deleteAccountById() {
         const id = document.getElementById("accountId").value;
-        console.log('Response status:', response.status); //debug
-        console.log('Response body:', data); //debug
+
         if (!id) {
             showFeedback("Please enter a valid Account ID.", false);
             return;
@@ -221,6 +220,10 @@
         try {
             const response = await fetch(`${BASE_URL}/${id}`, { method: "DELETE" });
             const data = await response.json();
+
+            console.log('Response status:', response.status); //debug
+            console.log('Response body:', data); //debug
+
             if (response.ok && data.success) {
                 showFeedback(data.message || "Account deleted successfully.", true);
             } else if (!response.ok) {
