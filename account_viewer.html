@@ -164,7 +164,7 @@
             "url": "/accounts",
             "method":"GET",
             "data":"",
-            "dataType": "JSON",
+            "dataType": "json",
             "success":function(result){
                 //console.log(result);
                 for (account of result){
@@ -184,7 +184,7 @@
             "url": "/accounts",
             "method":"POST",
             "data":JSON.stringify(account),
-            "dataType": "JSON",
+            "dataType": "json",
             contentType: "application/json; charset=utf-8",
             "success":function(result){
                 console.log("AJAX POST success, result from backend:", result);
@@ -205,7 +205,7 @@
             "url": "/accounts/"+encodeURI(account.account_id),
             "method":"PUT",
             "data":JSON.stringify(account),
-            "dataType": "JSON",
+            "dataType": "json",
             contentType: "application/json; charset=utf-8",
             "success":function(result){
                // console.log(result);
@@ -223,7 +223,7 @@
             "url": "/accounts/"+encodeURI(id),
             "method":"DELETE",
             "data":"",
-            "dataType": "JSON",
+            "dataType": "json",
             contentType: "application/json; charset=utf-8",
             "success":function(result){
                 //console.log(result);
