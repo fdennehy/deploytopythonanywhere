@@ -47,6 +47,23 @@
     document.getElementById("createAccountForm").reset();
     }
 
+    async function getAccountById() {
+        const id = document.getElementById("accountId").value;
+        if (!id) return alert("Please enter a valid account ID.");
+
+        const response = await fetch(`${BASE_URL}/${id}`);
+        const data = await response.json();
+        document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function deleteAccountById() {
+        const id = document.getElementById("accountId").value;
+        if (!id) return alert("Please enter a valid account ID.");
+
+        const response = await fetch(`${BASE_URL}/${id}`, { method: "DELETE" });
+        const data = await response.json();
+        document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+    }
     </script>
 </head>
 <body>
@@ -75,6 +92,13 @@
         </label><br>
         <button type="submit">Create Account</button>
     </form>
+
+    <h2>Get or Delete Account by ID</h2>
+        <label for="accountId">Account ID:</label>
+        <input type="number" id="accountId" required>
+
+        <button onclick="getAccountById()">Get Account</button>
+        <button onclick="deleteAccountById()">Delete Account</button>
 
     <pre id="output" style="background-color: #f4f4f4; padding: 10px;"></pre>
 
