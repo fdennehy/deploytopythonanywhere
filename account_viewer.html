@@ -1,38 +1,38 @@
 <html>
-    
-    <head>
-        <title>View Accounts</title>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<head>
+    <title>View Accounts</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
        
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    </head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
     
-    <body>
-        <h1>Accounts</h1>
-        <div> <button id="showCreateButton" onclick="showCreate()">Create</button></div>
-        <div>
-            <table class="table" id="accountTable">
-                <tr>
-                        <th>id</th>
-                        <th>Account Name</th>
-                        <th>Website</th>
-                        <th>Update</th>
-                        <th>Delete</th>
-                </tr>
-            </table>
-        </div>
-        <div id='createUpdateForm' style="display: none">
-                <h2><span id="createLabel">Create a</span> <span id="updateLabel">update</span> Account</h2>
-                <input type="hidden" name="id"/>
-                Account Name <input type="text" name="account_name" /><br/>
-                Website <input type="text" name="website"/> <br/>
-                <span><button id="doCreateButton" onclick="doCreate()">Create</button></span>
-                <span><button id="doUpdateButton" onclick="doUpdate()">Update</button></span>
-        </div>
-    </body>
+<body>
+    <h1>Accounts</h1>
+    <div> <button id="showCreateButton" onclick="showCreate()">Create</button></div>
+    <div>
+        <table class="table" id="accountTable">
+            <tr>
+                <th>id</th>
+                <th>Account Name</th>
+                <th>Website</th>
+                <th>Update</th>
+                <th>Delete</th>
+            </tr>
+        </table>
+    </div>
+    <div id='createUpdateForm' style="display: none">
+        <h2><span id="createLabel">Create a</span> <span id="updateLabel">update</span> Account</h2>
+        <input type="hidden" name="id"/>
+        Account Name <input type="text" name="account_name" /><br/>
+        Website <input type="text" name="website"/> <br/>
+        <span><button id="doCreateButton" onclick="doCreate()">Create</button></span>
+        <span><button id="doUpdateButton" onclick="doUpdate()">Update</button></span>
+    </div>
+</body>
     
-    <script>
+<script>
+$(document).ready(function() { 
     
     console.log("Test log")
 
@@ -249,5 +249,7 @@
     // Initial Load
     getAllAjax();
   
-    </script>
+});   
+</script>
+
 </html>
