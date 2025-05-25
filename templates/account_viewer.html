@@ -219,10 +219,14 @@
         try {
             const response = await fetch(`${BASE_URL}/${id}`, { method: "DELETE" });
             const data = await response.json();
-            if (response.ok) {
+            if (response.ok && data.success) {
                 showFeedback(data.message || "Account deleted successfully.", true);
+            } else if (!response.ok) {
+                // If server returns 404 or other error
+                showFeedback(data.error || "Account deletion failed: Not found.", false);
             } else {
-                showFeedback(data.error || "Account deletion failed.", false);
+                // Handle case where server returned 200 but success is false
+                showFeedback("Account deletion failed.", false);
             }
         } catch (err) {
             showFeedback("Error deleting account: " + err.message, false);
