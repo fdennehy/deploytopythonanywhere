@@ -96,6 +96,8 @@ $(document).ready(function() {
         }   
         
         var rowElement = document.getElementById(account.account_id);
+        console.log("Row element found:", rowElement)
+
         if (!rowElement) {
             alert("Error: No row found for Account ID" + account.account_id);
             return;
