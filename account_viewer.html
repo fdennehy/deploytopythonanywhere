@@ -84,7 +84,7 @@
 
     function doUpdate(){
         var account = getAccountFromForm();
-        var rowElement = document.getElementById(account.id);
+        var rowElement = document.getElementById(account.account.id);
         updateAccountAjax(account);
         setAccountInRow(rowElement,account);
        
@@ -103,10 +103,10 @@
     function addAccountToTable(account){
         var tableElement = document.getElementById('accountTable')
         var rowElement = tableElement.insertRow(-1)
-        rowElement.setAttribute('id',account.id)
+        rowElement.setAttribute('id',account.account.id)
 
         var cell1 = rowElement.insertCell(0);
-        cell1.innerHTML = account.id
+        cell1.innerHTML = account.account.id
 
         var cell2 = rowElement.insertCell(1);
         cell2.innerHTML = account.account_name
@@ -130,14 +130,14 @@
 
     function getAccountFromRow(rowElement){
         var account = {}
-        account.id  = rowElement.getAttribute('id')
+        account.account.id  = rowElement.getAttribute('id')
         account.account_name = rowElement.cells[1].firstChild.textContent
         account.website = rowElement.cells[2].firstChild.textContent
         return account;
     }
 
     function setAccountInRow(rowElement, account){
-        rowElement.cells[0].firstChild.textContent= account.id  
+        rowElement.cells[0].firstChild.textContent= account.account.id  
         rowElement.cells[1].firstChild.textContent= account.account_name 
         rowElement.cells[2].firstChild.textContent= account.website
     }
@@ -153,7 +153,7 @@
     function getAccountFromForm(){
         var form = document.getElementById('createUpdateForm')
         var account = {}
-        account.id = form.querySelector('input[name="id"]').value
+        account.account.id = form.querySelector('input[name="id"]').value
         account.account_name = form.querySelector('input[name="account_name"]').value
         account.website = form.querySelector('input[name="website"]').value
         console.log(JSON.stringify(account))
@@ -188,7 +188,7 @@
             contentType: "application/json; charset=utf-8",
             "success":function(result){
                 //console.log(result);
-                account.id = result.id
+                account.account.id = result.id
                 addAccountToTable(account)
                 clearForm()
                 showViewAll()
@@ -202,7 +202,7 @@
     function updateAccountAjax(account){
         console.log(JSON.stringify(account));
         $.ajax({
-            "url": "/accounts/"+encodeURI(account.id),
+            "url": "/accounts/"+encodeURI(account.account.id),
             "method":"PUT",
             "data":JSON.stringify(account),
             "dataType": "JSON",
