@@ -1,0 +1,9 @@
+Prompt provided to ChatGPT after the DAO and Server files were created:
+-----------------------------------------------------------------------
+
+As a backend developer, I have created a DAO.py and a Flask server.py which serve up data from a mySQL database via some endpoints. Both files have been successfully tested.
+
+You are a Front End developer, tasked with generating a front end html page that allows an end user interact with the data. I will QA by checking the urls(s) to ensure everything is functional and will provide feedback. 
+Functionality is priority 1, cosmetics / design are priority 2.
+
+Please generate an account_viewer.html file which forms the front end of a basic Customer Success Management Tool. Begin by producing buttons for the different API end points.

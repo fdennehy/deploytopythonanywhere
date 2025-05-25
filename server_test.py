@@ -76,7 +76,6 @@ response = requests.post(f"{BASE_URL}/dummy")
 if response.status_code == 201:
     dummy_data = response.json()
     print("Dummy insert success:", dummy_data.get("message"))
-    print("Number of dummy accounts inserted:", len(dummy_data.get("accounts", [])))
 else:
     print("Dummy data insert failed:", response.text)
 
