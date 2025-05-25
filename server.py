@@ -1,3 +1,4 @@
+# Import required modules
 from flask import Flask, jsonify, request, abort
 from flask_cors import CORS, cross_origin
 from account_DAO import accountDAOInstance
@@ -6,80 +7,86 @@ app = Flask(__name__, static_url_path='', static_folder='static') # serve static
 cors = CORS(app) # allow CORS for all domains on all routes.
 app.config['CORS_HEADERS'] = 'Content-Type'
 
+# Serve html file to root url /
 @app.route('/')
-@cross_origin()
-def index():
-    return "Account API Running!"
-
-# Add route to serve HTML
-@app.route('/account_viewer')
 @cross_origin()
 def account_viewer():
     return app.send_static_file('account_viewer.html')
 
-# Get all accounts: curl "http://127.0.0.1:5000/accounts"
+# Get all accounts: curl https://fdennehy.pythonanywhere.com/accounts
 @app.route('/accounts')
 @cross_origin()
 def getAllAccounts():
     results = accountDAOInstance.getAllAccounts()
     return jsonify(results)
 
-# Get an account by id: curl "http://127.0.0.1:5000/accounts/2"
-@app.route('/accounts/<int:account_id>')
+# Get an account by id: curl https://fdennehy.pythonanywhere.com/accounts/id"
+@app.route('/accounts/<int:id>')
 @cross_origin()
-def findById(id):
-    found_account = accountDAOInstance.findAccountByID(id)
-    if not found_account:
-        abort(404)
-    return jsonify(found_account)
+def getAccountById(id):
+    account = accountDAOInstance.findAccountByID(id)
+    if account:
+        return jsonify(account)
+    else:
+        return jsonify({"error": "Account not found"}), 404
 
-# Create new account: curl  -i -H "Content-Type:application/json" -X POST -d "{\"account_name\":\"webservicesinc\",\"website\":\"webservicesinc.com\"}" http://127.0.0.1:5000/accounts
+# Create new account: 
+# curl -i -H "Content-Type: application/json" -X POST -d '{"name": "Server Test Corp", "website": "http://servertest.com", "revenue": "0", "region":"Africa"}' https://fdennehy.pythonanywhere.com/accounts
 @app.route('/accounts', methods=['POST'])
 @cross_origin()
 def createAccount():
-    if not request.json:
-        abort(400)
-    # basic validation: require at least account_name, website can be optional
-    if 'account_name' not in request.json:
-        abort(400) 
-    account = {
-        "account_name": request.json['account_name'],
-        "website": request.json.get('website', "") # use get() for optional key
-    }
-    added_account = accountDAOInstance.createAccount(account)
-    print("Added account returned:", added_account) # Debug
-    return jsonify(added_account), 201
+    account = request.get_json()
+    if not account:
+        abort(400, description="Invalid Input")
+    new_account = accountDAOInstance.createAccount(account)
+    if new_account:
+        return jsonify(new_account), 201
+    else:
+        return jsonify({"error": "Account creation failed"}), 500
 
-# Update an existing account: curl  -i -H "Content-Type:application/json" -X PUT -d ""{\"account_name\":\"webservicesinc\",\"website\":\"webservicesinc.com\"}" http://127.0.0.1:5000/accounts/2
-@app.route('/accounts/<int:account_id>', methods=['PUT'])
+# Update account by ID
+# curl -i -H "Content-Type: application/json" -X PUT -d '{"name": "Updated Server Corp", "website": "http://updatedserver.com", "revenue": "0", "region":"Antarctica"}' https://fdennehy.pythonanywhere.com/accounts/id
+@app.route('/accounts/<int:id>', methods=['PUT'])
 @cross_origin()
-def update(id):
-    found_account = accountDAOInstance.findAccountByID(id)
-    if not found_account:
-        abort(404)
-    if not request.json:
-        abort(400)
-
-    reqJson = request.json
-    if 'account_name' in reqJson and type(reqJson['account_name']) is not str:
-        abort(400)
-    if 'website' in reqJson and type(reqJson['website']) is not str:
-        abort(400)
-
-    if 'account_name' in reqJson:
-        found_account['account_name'] = reqJson['account_name']
-    if 'website' in reqJson:
-        found_account['website'] = reqJson['website']
-
-    accountDAOInstance.updateAccount(id,found_account)
-    return jsonify(found_account)
+def updateAccount(id):
+    account = request.get_json()
+    if not account:
+        abort(400, description="Invalid input")
+    updated = accountDAOInstance.updateAccount(id, account)
+    if updated:
+        return jsonify(updated)
+    else:
+        return jsonify({'error': 'Account update failed'}), 500
         
-# Delete an account by id
-@app.route('/accounts/<int:account_id>' , methods=['DELETE'])
+# Delete an account by id: curl -X DELETE https://fdennehy.pythonanywhere.com/accounts/id
+@app.route('/accounts/<int:id>' , methods=['DELETE'])
 @cross_origin()
 def deleteAccount(id):
-    accountDAOInstance.deleteAccount(id)
-    return jsonify({"done":True})
+    result = accountDAOInstance.deleteAccount(id)
+    if result:
+        return jsonify({"success":True, "message":"Account deleted successfully"})
+    else:
+        return jsonify({"error":"Account deletion failed"}), 500
+
+# Delete all account data: curl -X DELETE https://fdennehy.pythonanywhere.com/accounts/wipe
+@app.route('/accounts/wipe', methods=['DELETE'])
+@cross_origin()
+def wipeAllAccounts():
+    result = accountDAOInstance.deleteAllAccounts()
+    if result:
+        return jsonify({"success":True, "message":"All accounts deleted successfully."}), 200
+    else:
+        return jsonify({"error":"Failed to delete accounts or no accounts found"}), 500
+
+# Generate dummy data: curl -X POST https://fdennehy.pythonanywhere.com/accounts/dummy
+@app.route('/accounts/dummy', methods=['POST'])
+@cross_origin()
+def insertDummyAccounts():
+    result = accountDAOInstance.dummyDataInsert()
+    if result:
+        return jsonify({"success": True, "message": "Dummy data inserted successfully.", "accounts": result}), 201
+    else:
+        return jsonify({"error": "Failed to insert dummy data."}), 500
 
 if __name__ == '__main__' :
     app.run(debug= True)
