@@ -25,7 +25,7 @@ def getAllAccounts():
     return jsonify(results)
 
 # Get an account by id: curl "http://127.0.0.1:5000/accounts/2"
-@app.route('/accounts/<int:id>')
+@app.route('/accounts/<int:account_id>')
 @cross_origin()
 def findById(id):
     found_account = accountDAOInstance.findAccountByID(id)
@@ -51,7 +51,7 @@ def createAccount():
     return jsonify(added_account), 201
 
 # Update an existing account: curl  -i -H "Content-Type:application/json" -X PUT -d ""{\"account_name\":\"webservicesinc\",\"website\":\"webservicesinc.com\"}" http://127.0.0.1:5000/accounts/2
-@app.route('/accounts/<int:id>', methods=['PUT'])
+@app.route('/accounts/<int:account_id>', methods=['PUT'])
 @cross_origin()
 def update(id):
     found_account = accountDAOInstance.findAccountByID(id)
@@ -75,7 +75,7 @@ def update(id):
     return jsonify(found_account)
         
 # Delete an account by id
-@app.route('/accounts/<int:id>' , methods=['DELETE'])
+@app.route('/accounts/<int:account_id>' , methods=['DELETE'])
 @cross_origin()
 def deleteAccount(id):
     accountDAOInstance.deleteAccount(id)

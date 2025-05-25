@@ -97,7 +97,7 @@ $(document).ready(function() {
         
         var rowElement = document.getElementById(account.account_id);
         if (!rowElement) {
-            alert("Error: No row found for Account ID" + account.account.id);
+            alert("Error: No row found for Account ID" + account.account_id);
             return;
         }
         
@@ -155,7 +155,7 @@ $(document).ready(function() {
 
     function clearForm(){
         var form = document.getElementById('createUpdateForm')
-        form.querySelector('input[name="id"]').value=''
+        form.querySelector('input[name="account_id"]').value=''
         form.querySelector('input[name="account_name"]').value=''
         form.querySelector('input[name="website"]').value=''
     }
