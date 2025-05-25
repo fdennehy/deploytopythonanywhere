@@ -3,6 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <title>CSM Tool - Account Viewer</title>
+<script>
+        const BASE_URL = "https://fdennehy.pythonanywhere.com/accounts";
+
+        async function getAllAccounts() {
+            const response = await fetch(BASE_URL);
+            const data = await response.json();
+            document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+        }
+
+        async function insertDummyAccounts() {
+            const response = await fetch(`${BASE_URL}/dummy`, { method: "POST" });
+            const data = await response.json();
+            document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+        }
+
+        async function deleteAllAccounts() {
+            const response = await fetch(`${BASE_URL}/wipe`, { method: "DELETE" });
+            const data = await response.json();
+            document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+        }
+    </script>
 </head>
 <body>
     <h1>Customer Success Management Tool</h1>
@@ -11,33 +32,7 @@
     <button onclick="insertDummyAccounts()">Insert Dummy Data</button>
     <button onclick="deleteAllAccounts()">Delete All Accounts</button>
 
-    <script>
-        const BASE_URL = "https://fdennehy.pythonanywhere.com/accounts";
-
-        function getAllAccounts() {
-            fetch(BASE_URL)
-                .then(response => response.json())
-                .then(data => console.log("Accounts:", data))
-                .catch(error => console.error("Error fetching accounts:", error));
-        }
-
-        function insertDummyAccounts() {
-            fetch(`${BASE_URL}/dummy`, {
-                method: "POST"
-            })
-            .then(response => response.json())
-            .then(data => console.log("Dummy insert response:", data))
-            .catch(error => console.error("Error inserting dummy data:", error));
-        }
-
-        function deleteAllAccounts() {
-            fetch(`${BASE_URL}/wipe`, {
-                method: "DELETE"
-            })
-            .then(response => response.json())
-            .then(data => console.log("Delete all response:", data))
-            .catch(error => console.error("Error deleting accounts:", error));
-        }
-    </script>
+    <h2>Response Output:</h2>
+    <pre id="output" style="background-color: #f4f4f4; padding: 10px;"></pre>
 </body>
 </html>
