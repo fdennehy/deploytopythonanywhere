@@ -181,7 +181,9 @@
     function createAccountAjax(account){
         //var account = {"account_name":"mickeymouse", "website":"mickeymouse.com"}
         console.log("createAccountAjax called with:", account);
-        console.log(JSON.stringify(account));
+        console.log("About to call $.ajax");
+        //console.log(JSON.stringify(account));
+        
         $.ajax({
             "url": "/accounts",
             "method":"POST",
