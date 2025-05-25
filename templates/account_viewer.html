@@ -212,6 +212,8 @@
 
     async function deleteAccountById() {
         const id = document.getElementById("accountId").value;
+        console.log('Response status:', response.status); //debug
+        console.log('Response body:', data); //debug
         if (!id) {
             showFeedback("Please enter a valid Account ID.", false);
             return;
