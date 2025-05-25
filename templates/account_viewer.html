@@ -64,6 +64,30 @@
         const data = await response.json();
         document.getElementById("output").textContent = JSON.stringify(data, null, 2);
     }
+
+    async function updateAccount(event) {
+        event.preventDefault();
+
+        const id = document.getElementById("updateId").value;
+
+        const updatedAccount = {
+            name: document.getElementById("updateName").value,
+            website: document.getElementById("updateWebsite").value,
+            revenue: document.getElementById("updateRevenue").value,
+            region: document.getElementById("updateRegion").value
+        };
+
+        const response = await fetch(`${BASE_URL}/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(updatedAccount)
+        });
+
+        const data = await response.json();
+        document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+
+        document.getElementById("updateAccountForm").reset();
+    }
     </script>
 </head>
 <body>
@@ -101,6 +125,26 @@
         <button onclick="deleteAccountById()">Delete Account</button>
 
     <pre id="output" style="background-color: #f4f4f4; padding: 10px;"></pre>
+
+    <h2>Update Account</h2>
+    <form id="updateAccountForm" onsubmit="updateAccount(event)">
+        <label>Account ID: <input type="number" id="updateId" required></label><br>
+        <label>Name: <input type="text" id="updateName" required></label><br>
+        <label>Website: <input type="url" id="updateWebsite" required></label><br>
+        <label>Revenue: <input type="number" id="updateRevenue" required></label><br>
+        <label>Region:
+            <select id="updateRegion">
+                <option>North America</option>
+                <option>South America</option>
+                <option>Europe</option>
+                <option>Asia</option>
+                <option>Africa</option>
+                <option>Australia</option>
+                <option>Antarctica</option>
+            </select>
+        </label><br>
+        <button type="submit">Update Account</button>
+</form>
 
 </body>
 </html>
