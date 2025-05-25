@@ -82,13 +82,13 @@
   }
 
   form {
-    background: transparent;
-    padding: 0;               
-    border-radius: 0;
-    box-shadow: none;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 12px rgba(0,0,0,0.08);
     height: auto;
     box-sizing: border-box;
-    flex-grow: 1;  
+    flex-grow: 1;
   }
 
   /* Updated formsContainer: use CSS Grid with fixed 3 equal columns on wider screens */
@@ -167,15 +167,6 @@
       grid-template-columns: 1fr;
     }
   }
-  /* Debug - force all form children visible temporarily */
-  form * {
-    display: block !important;
-    visibility: visible !important;
-    height: auto !important;
-    opacity: 1 !important;
-    color: #333 !important;
-  }
-
 </style>
 </head>
 <body>
