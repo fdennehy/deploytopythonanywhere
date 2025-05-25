@@ -87,6 +87,9 @@ $(document).ready(function() {
 
     function doUpdate(){
         var account = getAccountFromForm();
+
+        console.log("Updating accunt with ID:", account.account_id);
+
         if (!account.account_id) {
             alert("Error: Account ID is missing. Cannot update.");
             return; // Stop the update, ID is required
@@ -242,16 +245,20 @@ $(document).ready(function() {
     }
 
     function updateAccountAjax(account){
-        console.log(JSON.stringify(account));
+        if(!account.account_id) {
+            alert("Cannot update: Missing account ID");
+            return
+        }
+
+        //console.log(JSON.stringify(account));
         $.ajax({
-            "url": "/accounts/"+encodeURI(account.account_id),
+            "url": "/accounts/"+encodeURIComponent(account.account_id),
             "method":"PUT",
             "data":JSON.stringify(account),
-            "dataType": "json",
             contentType: "application/json; charset=utf-8",
+            "dataType": "json",
             "success":function(result){
-               // console.log(result);
-                  
+               console.log("Update success", result);
             },
             "error":function(xhr,status,error){
                 console.log("error: "+status+" msg:"+error);
