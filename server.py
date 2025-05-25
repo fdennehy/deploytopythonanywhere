@@ -1,5 +1,5 @@
 # Import required modules
-from flask import Flask, jsonify, request, abort
+from flask import Flask, jsonify, request, abort, render_template
 from flask_cors import CORS, cross_origin
 from account_DAO import accountDAOInstance
 
@@ -11,7 +11,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 @app.route('/')
 @cross_origin()
 def account_viewer():
-    return app.send_static_file('account_viewer.html')
+    return render_template("account_viewer.html")
 
 # Get all accounts: curl https://fdennehy.pythonanywhere.com/accounts
 @app.route('/accounts')

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CSM Tool - Account Viewer</title>
+</head>
+<body>
+    <h1>Customer Success Management Tool</h1>
+
+    <button onclick="getAllAccounts()">Get All Accounts</button>
+    <button onclick="insertDummyAccounts()">Insert Dummy Data</button>
+    <button onclick="deleteAllAccounts()">Delete All Accounts</button>
+
+    <script>
+        const BASE_URL = "https://fdennehy.pythonanywhere.com/accounts";
+
+        function getAllAccounts() {
+            fetch(BASE_URL)
+                .then(response => response.json())
+                .then(data => console.log("Accounts:", data))
+                .catch(error => console.error("Error fetching accounts:", error));
+        }
+
+        function insertDummyAccounts() {
+            fetch(`${BASE_URL}/dummy`, {
+                method: "POST"
+            })
+            .then(response => response.json())
+            .then(data => console.log("Dummy insert response:", data))
+            .catch(error => console.error("Error inserting dummy data:", error));
+        }
+
+        function deleteAllAccounts() {
+            fetch(`${BASE_URL}/wipe`, {
+                method: "DELETE"
+            })
+            .then(response => response.json())
+            .then(data => console.log("Delete all response:", data))
+            .catch(error => console.error("Error deleting accounts:", error));
+        }
+    </script>
+</body>
+</html>
