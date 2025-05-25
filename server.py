@@ -47,7 +47,7 @@ def createAccount():
         "website": request.json.get('website', "") # use get() for optional key
     }
     added_account = accountDAOInstance.createAccount(account)
-    
+    print("Added account returned:", added_account) # Debug
     return jsonify(added_account), 201
 
 # Update an existing account: curl  -i -H "Content-Type:application/json" -X PUT -d ""{\"account_name\":\"webservicesinc\",\"website\":\"webservicesinc.com\"}" http://127.0.0.1:5000/accounts/2
