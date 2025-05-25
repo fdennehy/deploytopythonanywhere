@@ -198,6 +198,9 @@
             "error":function(xhr,status,error){
                 console.log("error: "+status+" msg:"+error);
                 console.log("Response text:", xhr.responseText);
+            },
+            complete: function(xhr, status) {
+                console.log("AJAX POST complete, status:", status);
             }
         });
     }
