@@ -241,7 +241,7 @@
     async function updateAccount(event) {
         event.preventDefault();
 
-        const id = document.getElementById("updateAccountId").value;
+        const id = document.getElementById("updateId").value;
         if (!id) {
             showFeedback("Please enter a valid Account ID to update.", false);
             return;
@@ -253,6 +253,9 @@
             revenue: document.getElementById("updateRevenue").value,
             region: document.getElementById("updateRegion").value
         };
+
+        console.log("Updating account ID:", id); // debug
+        console.log("Payload:", account); // debug
 
         try {
             const response = await fetch(`${BASE_URL}/${id}`, {
