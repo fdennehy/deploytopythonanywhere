@@ -126,60 +126,48 @@
      }
 
 </style>
-
 <script>
     const BASE_URL = "https://fdennehy.pythonanywhere.com/accounts";
 
-    function showMessage(message, type = 'success') {
-        const msg = document.getElementById("statusMessage");
-        msg.className = type;
-        msg.textContent = message;
-        msg.style.display = "block";
-        clearTimeout(window._messageTimeout);
-        window._messageTimeout = setTimeout(() => {
-            msg.style.display = "none";
-        }, 4000);
+    // Show feedback message in output area with color coding
+    function showFeedback(message, success = true) {
+        const output = document.getElementById("output");
+        output.textContent = message;
+        output.style.color = success ? "green" : "red";
     }
 
     async function getAllAccounts() {
-        showMessage("Loading accounts...", "loading");
         try {
             const response = await fetch(BASE_URL);
             const data = await response.json();
-            document.getElementById("output").textContent = JSON.stringify(data, null, 2);
-            showMessage("Accounts loaded successfully.");
-        } catch (error) {
-            showMessage("Failed to load accounts.", "error");
+            showFeedback(JSON.stringify(data, null, 2), true);
+        } catch (err) {
+            showFeedback("Error fetching accounts: " + err.message, false);
         }
     }
 
     async function insertDummyAccounts() {
-        showMessage("Inserting dummy data...", "loading");
         try {
             const response = await fetch(`${BASE_URL}/dummy`, { method: "POST" });
             const data = await response.json();
-            document.getElementById("output").textContent = JSON.stringify(data, null, 2);
-            showMessage("Dummy accounts inserted.");
-        } catch (error) {
-            showMessage("Failed to insert dummy accounts.", "error");
+            showFeedback(JSON.stringify(data, null, 2), true);
+        } catch (err) {
+            showFeedback("Error inserting dummy accounts: " + err.message, false);
         }
     }
 
     async function deleteAllAccounts() {
-        showMessage("Deleting all accounts...", "loading");
         try {
             const response = await fetch(`${BASE_URL}/wipe`, { method: "DELETE" });
             const data = await response.json();
-            document.getElementById("output").textContent = JSON.stringify(data, null, 2);
-            showMessage("All accounts deleted.");
-        } catch (error) {
-            showMessage("Failed to delete accounts.", "error");
+            showFeedback(JSON.stringify(data, null, 2), true);
+        } catch (err) {
+            showFeedback("Error deleting all accounts: " + err.message, false);
         }
     }
 
     async function createAccount(event) {
         event.preventDefault();
-        showMessage("Creating account...", "loading");
 
         const account = {
             name: document.getElementById("name").value,
@@ -194,64 +182,61 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(account)
             });
-
-            if (!response.ok) throw new Error("Server error");
-
             const data = await response.json();
-            document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+            showFeedback(JSON.stringify(data, null, 2), true);
             document.getElementById("createAccountForm").reset();
-            showMessage("Account created successfully.");
-        } catch (error) {
-            showMessage("Failed to create account.", "error");
+        } catch (err) {
+            showFeedback("Error creating account: " + err.message, false);
         }
     }
 
     async function getAccountById() {
-    const id = document.getElementById("accountId").value;
-    if (!id) return showMessage("Please enter an Account ID.", "error");
-
-    try {
-        const response = await fetch(`${BASE_URL}/${id}`);
-        if (!response.ok) throw new Error("Account not found.");
-        const data = await response.json();
-        document.getElementById("output").textContent = JSON.stringify(data, null, 2);
-        showMessage(`Account ${id} retrieved successfully.`, "success");
-    } catch (error) {
-        showMessage(`Failed to retrieve account: ${error.message}`, "error");
-    }
+        const id = document.getElementById("accountId").value;
+        if (!id) {
+            showFeedback("Please enter a valid Account ID.", false);
+            return;
+        }
+        try {
+            const response = await fetch(`${BASE_URL}/${id}`);
+            if (response.ok) {
+                const data = await response.json();
+                showFeedback(JSON.stringify(data, null, 2), true);
+            } else {
+                const error = await response.json();
+                showFeedback(`Error: ${error.error || "Account not found"}`, false);
+            }
+        } catch (err) {
+            showFeedback("Error fetching account: " + err.message, false);
+        }
     }
 
     async function deleteAccountById() {
-    const id = document.getElementById("accountId").value;
-    if (!id) {
-        alert("Please enter a valid account ID");
-        return;
-    }
-    try {
-        const response = await fetch(`${BASE_URL}/${id}`, { method: "DELETE" });
-
-        if (response.ok) {
-        // HTTP 200-299 means success
-        const data = await response.json();
-        showFeedback(data.message || "Account deleted successfully", true);
-        getAllAccounts(); // refresh list
-        } else if (response.status === 404) {
-        showFeedback("Account not found. Nothing was deleted.", false);
-        } else {
-        // other error
-        const errorData = await response.json();
-        showFeedback(errorData.error || "Delete failed with unknown error.", false);
+        const id = document.getElementById("accountId").value;
+        if (!id) {
+            showFeedback("Please enter a valid Account ID.", false);
+            return;
         }
-    } catch (error) {
-        showFeedback("Network error or server not responding.", false);
-    }
+        try {
+            const response = await fetch(`${BASE_URL}/${id}`, { method: "DELETE" });
+            const data = await response.json();
+            if (response.ok) {
+                showFeedback(data.message || "Account deleted successfully.", true);
+            } else {
+                showFeedback(data.error || "Account deletion failed.", false);
+            }
+        } catch (err) {
+            showFeedback("Error deleting account: " + err.message, false);
+        }
     }
 
     async function updateAccount(event) {
         event.preventDefault();
 
-        const id = document.getElementById("updateId").value;
-        if (!id) return showMessage("Please enter an Account ID to update.", "error");
+        const id = document.getElementById("updateAccountId").value;
+        if (!id) {
+            showFeedback("Please enter a valid Account ID to update.", false);
+            return;
+        }
 
         const account = {
             name: document.getElementById("updateName").value,
@@ -266,18 +251,17 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(account)
             });
-
-            if (!response.ok) throw new Error("Failed to update account.");
-            const data = await response.json();
-            document.getElementById("output").textContent = JSON.stringify(data, null, 2);
-            showMessage(`Account ${id} updated successfully.`, "success");
-
-            document.getElementById("updateAccountForm").reset();
-        } catch (error) {
-            showMessage(`Failed to update account: ${error.message}`, "error");
+            if (response.ok) {
+                const data = await response.json();
+                showFeedback(JSON.stringify(data, null, 2), true);
+            } else {
+                const error = await response.json();
+                showFeedback(`Error updating account: ${error.error || 'Unknown error'}`, false);
+            }
+        } catch (err) {
+            showFeedback("Error updating account: " + err.message, false);
         }
     }
-
 </script>
 </head>
 
