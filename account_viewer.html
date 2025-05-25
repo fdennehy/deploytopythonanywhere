@@ -101,6 +101,7 @@
     }
 
     function addAccountToTable(account){
+        console.log("Adding account to table:", account);
         var tableElement = document.getElementById('accountTable')
         var rowElement = tableElement.insertRow(-1)
         rowElement.setAttribute('id',account.account_id)
@@ -187,6 +188,7 @@
             "dataType": "json",
             contentType: "application/json; charset=utf-8",
             "success":function(result){
+                console.log("AJAX POST success called");
                 console.log("AJAX POST success, result from backend:", result);
                 account.account_id = result.account_id
                 addAccountToTable(account)
@@ -195,6 +197,7 @@
             },
             "error":function(xhr,status,error){
                 console.log("error: "+status+" msg:"+error);
+                console.log("Response text:", xhr.responseText);
             }
         });
     }
