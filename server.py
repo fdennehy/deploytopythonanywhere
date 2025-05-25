@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request, abort
 from flask_cors import CORS, cross_origin
 from account_DAO import accountDAOInstance
 
-app = Flask(__name__, static_url_path='', static_folder='.')
+app = Flask(__name__, static_url_path='', static_folder='static') # serve static files from static/, but make them accessible at the root URL.
 cors = CORS(app) # allow CORS for all domains on all routes.
 app.config['CORS_HEADERS'] = 'Content-Type'
 
@@ -10,6 +10,12 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 @cross_origin()
 def index():
     return "Account API Running!"
+
+# Add route to serve HTML
+@app.route('/account_viewer')
+@cross_origin()
+def account_viewer():
+    return app.send_static_file('account_viewer.html')
 
 # Get all accounts: curl "http://127.0.0.1:5000/accounts"
 @app.route('/accounts')
