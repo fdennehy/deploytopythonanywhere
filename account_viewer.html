@@ -144,7 +144,7 @@
 
     function populateFormWithAccount(account){
         var form = document.getElementById('createUpdateForm')
-        form.querySelector('input[name="id"]').disabled = true
+        form.querySelector('input[name="id"]').value = account.account_id
         form.querySelector('input[name="account_name"]').value  = account.account_name
         form.querySelector('input[name="website"]').value= account.website
         return account
