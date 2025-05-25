@@ -222,18 +222,29 @@
     }
 
     async function deleteAccountById() {
-        const id = document.getElementById("accountId").value;
-        if (!id) return showMessage("Please enter an Account ID.", "error");
+    const id = document.getElementById("accountId").value;
+    if (!id) {
+        alert("Please enter a valid account ID");
+        return;
+    }
+    try {
+        const response = await fetch(`${BASE_URL}/${id}`, { method: "DELETE" });
 
-        try {
-            const response = await fetch(`${BASE_URL}/${id}`, { method: "DELETE" });
-            if (!response.ok) throw new Error("Account not found or already deleted.");
-            const data = await response.json();
-            document.getElementById("output").textContent = JSON.stringify(data, null, 2);
-            showMessage(`Account ${id} deleted successfully.`, "success");
-        } catch (error) {
-            showMessage(`Failed to delete account: ${error.message}`, "error");
+        if (response.ok) {
+        // HTTP 200-299 means success
+        const data = await response.json();
+        showFeedback(data.message || "Account deleted successfully", true);
+        getAllAccounts(); // refresh list
+        } else if (response.status === 404) {
+        showFeedback("Account not found. Nothing was deleted.", false);
+        } else {
+        // other error
+        const errorData = await response.json();
+        showFeedback(errorData.error || "Delete failed with unknown error.", false);
         }
+    } catch (error) {
+        showFeedback("Network error or server not responding.", false);
+    }
     }
 
     async function updateAccount(event) {
