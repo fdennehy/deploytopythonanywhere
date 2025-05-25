@@ -205,6 +205,68 @@
             showMessage("Failed to create account.", "error");
         }
     }
+
+    async function getAccountById() {
+    const id = document.getElementById("accountId").value;
+    if (!id) return showMessage("Please enter an Account ID.", "error");
+
+    try {
+        const response = await fetch(`${BASE_URL}/${id}`);
+        if (!response.ok) throw new Error("Account not found.");
+        const data = await response.json();
+        document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+        showMessage(`Account ${id} retrieved successfully.`, "success");
+    } catch (error) {
+        showMessage(`Failed to retrieve account: ${error.message}`, "error");
+    }
+    }
+
+    async function deleteAccountById() {
+        const id = document.getElementById("accountId").value;
+        if (!id) return showMessage("Please enter an Account ID.", "error");
+
+        try {
+            const response = await fetch(`${BASE_URL}/${id}`, { method: "DELETE" });
+            if (!response.ok) throw new Error("Account not found or already deleted.");
+            const data = await response.json();
+            document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+            showMessage(`Account ${id} deleted successfully.`, "success");
+        } catch (error) {
+            showMessage(`Failed to delete account: ${error.message}`, "error");
+        }
+    }
+
+    async function updateAccount(event) {
+        event.preventDefault();
+
+        const id = document.getElementById("updateId").value;
+        if (!id) return showMessage("Please enter an Account ID to update.", "error");
+
+        const account = {
+            name: document.getElementById("updateName").value,
+            website: document.getElementById("updateWebsite").value,
+            revenue: document.getElementById("updateRevenue").value,
+            region: document.getElementById("updateRegion").value
+        };
+
+        try {
+            const response = await fetch(`${BASE_URL}/${id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(account)
+            });
+
+            if (!response.ok) throw new Error("Failed to update account.");
+            const data = await response.json();
+            document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+            showMessage(`Account ${id} updated successfully.`, "success");
+
+            document.getElementById("updateAccountForm").reset();
+        } catch (error) {
+            showMessage(`Failed to update account: ${error.message}`, "error");
+        }
+    }
+
 </script>
 </head>
 
