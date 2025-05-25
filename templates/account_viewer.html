@@ -3,107 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <title>CSM Tool - Account Viewer</title>
-<script>
-    const BASE_URL = "https://fdennehy.pythonanywhere.com/accounts";
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
 
-    async function getAllAccounts() {
-        const response = await fetch(BASE_URL);
-        const data = await response.json();
-        document.getElementById("output").textContent = JSON.stringify(data, null, 2);
-    }
+        h1 {
+            text-align: center;
+            color: #004080;
+        }
 
-    async function insertDummyAccounts() {
-        const response = await fetch(`${BASE_URL}/dummy`, { method: "POST" });
-        const data = await response.json();
-        document.getElementById("output").textContent = JSON.stringify(data, null, 2);
-    }
+        section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: #fff;
+        }
 
-    async function deleteAllAccounts() {
-        const response = await fetch(`${BASE_URL}/wipe`, { method: "DELETE" });
-        const data = await response.json();
-        document.getElementById("output").textContent = JSON.stringify(data, null, 2);
-    }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
 
-    async function createAccount(event) {
-    event.preventDefault();
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
 
-    const account = {
-        name: document.getElementById("name").value,
-        website: document.getElementById("website").value,
-        revenue: document.getElementById("revenue").value,
-        region: document.getElementById("region").value
-    };
+        button {
+            margin: 5px 5px 5px 0;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #0077cc;
+            color: white;
+            cursor: pointer;
+        }
 
-    const response = await fetch(BASE_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(account)
-    });
+        button:hover {
+            background-color: #005fa3;
+        }
 
-    const data = await response.json();
-    document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+        pre#output {
+            background-color: #f0f0f0;
+            padding: 15px;
+            border-radius: 10px;
+            white-space: pre-wrap;
+        }
+    </style>
 
-    // Clear form
-    document.getElementById("createAccountForm").reset();
-    }
+    <script>
+        const BASE_URL = "https://fdennehy.pythonanywhere.com/accounts";
 
-    async function getAccountById() {
-        const id = document.getElementById("accountId").value;
-        if (!id) return alert("Please enter a valid account ID.");
+        async function getAllAccounts() {
+            const response = await fetch(BASE_URL);
+            const data = await response.json();
+            document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+        }
 
-        const response = await fetch(`${BASE_URL}/${id}`);
-        const data = await response.json();
-        document.getElementById("output").textContent = JSON.stringify(data, null, 2);
-    }
+        async function insertDummyAccounts() {
+            const response = await fetch(`${BASE_URL}/dummy`, { method: "POST" });
+            const data = await response.json();
+            document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+        }
 
-    async function deleteAccountById() {
-        const id = document.getElementById("accountId").value;
-        if (!id) return alert("Please enter a valid account ID.");
+        async function deleteAllAccounts() {
+            const response = await fetch(`${BASE_URL}/wipe`, { method: "DELETE" });
+            const data = await response.json();
+            document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+        }
 
-        const response = await fetch(`${BASE_URL}/${id}`, { method: "DELETE" });
-        const data = await response.json();
-        document.getElementById("output").textContent = JSON.stringify(data, null, 2);
-    }
+        async function createAccount(event) {
+            event.preventDefault();
+            const account = {
+                name: document.getElementById("name").value,
+                website: document.getElementById("website").value,
+                revenue: document.getElementById("revenue").value,
+                region: document.getElementById("region").value
+            };
+            const response = await fetch(BASE_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(account)
+            });
+            const data = await response.json();
+            document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+            document.getElementById("createAccountForm").reset();
+        }
 
-    async function updateAccount(event) {
-        event.preventDefault();
+        async function getAccountById() {
+            const id = document.getElementById("accountId").value;
+            const response = await fetch(`${BASE_URL}/${id}`);
+            const data = await response.json();
+            document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+        }
 
-        const id = document.getElementById("updateId").value;
+        async function deleteAccountById() {
+            const id = document.getElementById("accountId").value;
+            const response = await fetch(`${BASE_URL}/${id}`, { method: "DELETE" });
+            const data = await response.json();
+            document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+        }
 
-        const updatedAccount = {
-            name: document.getElementById("updateName").value,
-            website: document.getElementById("updateWebsite").value,
-            revenue: document.getElementById("updateRevenue").value,
-            region: document.getElementById("updateRegion").value
-        };
-
-        const response = await fetch(`${BASE_URL}/${id}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(updatedAccount)
-        });
-
-        const data = await response.json();
-        document.getElementById("output").textContent = JSON.stringify(data, null, 2);
-
-        document.getElementById("updateAccountForm").reset();
-    }
+        async function updateAccount(event) {
+            event.preventDefault();
+            const id = document.getElementById("updateId").value;
+            const updated = {
+                name: document.getElementById("updateName").value,
+                website: document.getElementById("updateWebsite").value,
+                revenue: document.getElementById("updateRevenue").value,
+                region: document.getElementById("updateRegion").value
+            };
+            const response = await fetch(`${BASE_URL}/${id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(updated)
+            });
+            const data = await response.json();
+            document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+            document.getElementById("updateAccountForm").reset();
+        }
     </script>
 </head>
+
 <body>
     <h1>Customer Success Management Tool</h1>
 
-    <button onclick="getAllAccounts()">Get All Accounts</button>
-    <button onclick="insertDummyAccounts()">Insert Dummy Data</button>
-    <button onclick="deleteAllAccounts()">Delete All Accounts</button>
+    <section>
+        <h2>Account Actions</h2>
+        <button onclick="getAllAccounts()">Get All Accounts</button>
+        <button onclick="insertDummyAccounts()">Insert Dummy Data</button>
+        <button onclick="deleteAllAccounts()">Delete All Accounts</button>
+    </section>
 
-
-    <h2>Create New Account</h2>
-    <form id="createAccountForm" onsubmit="createAccount(event)">
-        <label>Name: <input type="text" id="name" required></label><br>
-        <label>Website: <input type="url" id="website" required></label><br>
-        <label>Revenue: <input type="number" id="revenue" required></label><br>
-        <label>Region: 
+    <section>
+        <h2>Create New Account</h2>
+        <form id="createAccountForm" onsubmit="createAccount(event)">
+            <label>Name:</label>
+            <input type="text" id="name" required>
+            <label>Website:</label>
+            <input type="url" id="website" required>
+            <label>Revenue:</label>
+            <input type="number" id="revenue" required>
+            <label>Region:</label>
             <select id="region">
                 <option>North America</option>
                 <option>South America</option>
@@ -113,26 +164,30 @@
                 <option>Australia</option>
                 <option>Antarctica</option>
             </select>
-        </label><br>
-        <button type="submit">Create Account</button>
-    </form>
+            <button type="submit">Create Account</button>
+        </form>
+    </section>
 
-    <h2>Get or Delete Account by ID</h2>
-        <label for="accountId">Account ID:</label>
+    <section>
+        <h2>Get or Delete Account by ID</h2>
+        <label>Account ID:</label>
         <input type="number" id="accountId" required>
-
         <button onclick="getAccountById()">Get Account</button>
         <button onclick="deleteAccountById()">Delete Account</button>
+    </section>
 
-    <pre id="output" style="background-color: #f4f4f4; padding: 10px;"></pre>
-
-    <h2>Update Account</h2>
-    <form id="updateAccountForm" onsubmit="updateAccount(event)">
-        <label>Account ID: <input type="number" id="updateId" required></label><br>
-        <label>Name: <input type="text" id="updateName" required></label><br>
-        <label>Website: <input type="url" id="updateWebsite" required></label><br>
-        <label>Revenue: <input type="number" id="updateRevenue" required></label><br>
-        <label>Region:
+    <section>
+        <h2>Update Account</h2>
+        <form id="updateAccountForm" onsubmit="updateAccount(event)">
+            <label>Account ID:</label>
+            <input type="number" id="updateId" required>
+            <label>Name:</label>
+            <input type="text" id="updateName" required>
+            <label>Website:</label>
+            <input type="url" id="updateWebsite" required>
+            <label>Revenue:</label>
+            <input type="number" id="updateRevenue" required>
+            <label>Region:</label>
             <select id="updateRegion">
                 <option>North America</option>
                 <option>South America</option>
@@ -142,9 +197,13 @@
                 <option>Australia</option>
                 <option>Antarctica</option>
             </select>
-        </label><br>
-        <button type="submit">Update Account</button>
-</form>
+            <button type="submit">Update Account</button>
+        </form>
+    </section>
 
+    <section>
+        <h2>Output</h2>
+        <pre id="output">(Output will appear here)</pre>
+    </section>
 </body>
 </html>
