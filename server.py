@@ -64,9 +64,9 @@ def updateAccount(id):
 def deleteAccount(id):
     result = accountDAOInstance.deleteAccount(id)
     if result:
-        return jsonify({"success":True, "message":"Account deleted successfully"})
+        return jsonify({"success":True, "message":"Account deleted successfully"}),200
     else:
-        return jsonify({"error":"Account deletion failed"}), 500
+        return jsonify({"error":"Account deletion failed"}), 404
 
 # Delete all account data: curl -X DELETE https://fdennehy.pythonanywhere.com/accounts/wipe
 @app.route('/accounts/wipe', methods=['DELETE'])
