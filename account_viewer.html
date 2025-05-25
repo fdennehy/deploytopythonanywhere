@@ -95,11 +95,27 @@ $(document).ready(function() {
         showViewAll();
     }
 
+    /*
     function doDelete(button){
         var tableElement = document.getElementById('accountTable');
         var rowElement = button.parentNode.parentNode;
         var index = rowElement.rowIndex;
         deleteAccountAjax(rowElement.getAttribute("id"));
+        tableElement.deleteRow(index);
+    }
+    */
+
+    function doDelete(button){
+        var rowElement = button.parentNode.parentNode;
+        var id = rowElement.getAttribute("id");
+        console.log("Deleting account with id:", id);
+        if (!id) {
+            alert("Error: account id not found for delete.");
+            return;
+        }
+        deleteAccountAjax(id);
+        var tableElement = document.getElementById('accountTable');
+        var index = rowElement.rowIndex;
         tableElement.deleteRow(index);
     }
 
