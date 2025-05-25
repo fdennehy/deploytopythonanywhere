@@ -111,10 +111,14 @@ class accountDAO:
     def deleteAccount(self, id):
         try:
             cursor = self.getcursor()
-            sql="delete from account where id = %s"
+            sql = "DELETE FROM account WHERE id = %s"
             cursor.execute(sql, (id,))
             self.connection.commit()
-            return{"status": "deleted", "id": id}
+            
+            if cursor.rowcount == 0:
+                return None  # No rows deleted — account not found
+            else:
+                return {"status": "deleted", "id": id}
         except mysql.connector.Error as err:
             print(f"DB Error in deleteAccount: {err}")
             return None
