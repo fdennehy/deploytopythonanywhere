@@ -79,3 +79,8 @@ if response.status_code == 201:
     print("Number of dummy accounts inserted:", len(dummy_data.get("accounts", [])))
 else:
     print("Dummy data insert failed:", response.text)
+
+# 10. Verify dummy account have been created: curl https://fdennehy.pythonanywhere.com/accounts
+print("\n Confirming dummy accounts have been created: \n")
+response = requests.get(BASE_URL)
+print(response.json())
