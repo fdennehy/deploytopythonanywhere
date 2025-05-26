@@ -12,11 +12,13 @@
         <!-- Sidebar -->
         <div class="col-md-3 bg-light p-3">
             <h4>Account Viewer</h4>
-            <button class="btn btn-primary btn-block mb-2" onclick="viewAllAccounts()">View All Accounts</button>
-            <button class="btn btn-secondary btn-block mb-2" onclick="showFindById()">Find Account by ID</button>
-            <button class="btn btn-info btn-block mb-2" onclick="showUpdateById()">Update Account by ID</button>
-            <button class="btn btn-danger btn-block mb-2" onclick="showDeleteById()">Delete Account by ID</button>
-            <button class="btn btn-success btn-block mt-4" onclick="showCreateAccount()">Create Account</button>
+            <div class="d-grid gap-2">
+                <button class="btn btn-primary mb-2" onclick="viewAllAccounts()">View All Accounts</button>
+                <button class="btn btn-secondary mb-2" onclick="showFindById()">Find Account by ID</button>
+                <button class="btn btn-success mb-2" onclick="showCreateAccount()">Create Account</button>
+                <button class="btn btn-info mb-2" onclick="showUpdateById()">Update Account by ID</button>
+                <button class="btn btn-danger mb-2" onclick="showDeleteById()">Delete Account by ID</button>
+            </div>
         </div>
 
         <!-- Main Output Area -->
@@ -30,9 +32,9 @@
 function viewAllAccounts() {
     $.get("/accounts", function(data) {
         if (!Array.isArray(data)) return $('#output-area').html('<p>Error retrieving accounts.</p>');
-        let html = '<h4>All Accounts</h4><table class="table"><thead><tr><th>ID</th><th>Name</th><th>Website</th></tr></thead><tbody>';
+        let html = '<h4>All Accounts</h4><table class="table"><thead><tr><th>ID</th><th>Name</th><th>Website</th><th>Revenue</th><th>Region</th></tr></thead><tbody>';
         data.forEach(acc => {
-            html += `<tr><td>${acc.id}</td><td>${acc.account_name}</td><td>${acc.website}</td></tr>`;
+            html += `<tr><td>${acc.id}</td><td>${acc.account_name || ''}</td><td>${acc.website || ''}</td><td>${acc.revenue || ''}</td><td>${acc.region || ''}</td></tr>`;
         });
         html += '</tbody></table>';
         $('#output-area').html(html);
@@ -51,8 +53,8 @@ function showFindById() {
 function findById() {
     const id = $('#find-id').val();
     $.get(`/accounts/${id}`, function(acc) {
-        const html = `<table class="table"><tr><th>ID</th><th>Name</th><th>Website</th></tr>
-                      <tr><td>${acc.id}</td><td>${acc.account_name}</td><td>${acc.website}</td></tr></table>`;
+        const html = `<table class="table"><tr><th>ID</th><th>Name</th><th>Website</th><th>Revenue</th><th>Region</th></tr>
+                      <tr><td>${acc.id}</td><td>${acc.account_name}</td><td>${acc.website}</td><td>${acc.revenue}</td><td>${acc.region}</td></tr></table>`;
         $('#result').html(html);
     }).fail(() => $('#result').html('<div class="text-danger">Account not found.</div>'));
 }
@@ -63,6 +65,8 @@ function showUpdateById() {
         <input id="update-id" type="number" class="form-control mb-2" placeholder="ID">
         <input id="update-name" type="text" class="form-control mb-2" placeholder="Account Name">
         <input id="update-website" type="text" class="form-control mb-2" placeholder="Website">
+        <input id="update-revenue" type="text" class="form-control mb-2" placeholder="Revenue">
+        <input id="update-region" type="text" class="form-control mb-2" placeholder="Region">
         <button class="btn btn-info" onclick="updateById()">Update</button>
         <div id="update-result" class="mt-3"></div>
     `);
@@ -72,7 +76,9 @@ function updateById() {
     const id = $('#update-id').val();
     const payload = {
         account_name: $('#update-name').val(),
-        website: $('#update-website').val()
+        website: $('#update-website').val(),
+        revenue: $('#update-revenue').val(),
+        region: $('#update-region').val()
     };
     $.ajax({
         url: `/accounts/${id}`,
@@ -108,6 +114,8 @@ function showCreateAccount() {
         <h4>Create Account</h4>
         <input id="create-name" type="text" class="form-control mb-2" placeholder="Account Name">
         <input id="create-website" type="text" class="form-control mb-2" placeholder="Website">
+        <input id="create-revenue" type="text" class="form-control mb-2" placeholder="Revenue">
+        <input id="create-region" type="text" class="form-control mb-2" placeholder="Region">
         <button class="btn btn-success" onclick="createAccount()">Create</button>
         <div id="create-result" class="mt-3"></div>
     `);
@@ -116,7 +124,9 @@ function showCreateAccount() {
 function createAccount() {
     const payload = {
         account_name: $('#create-name').val(),
-        website: $('#create-website').val()
+        website: $('#create-website').val(),
+        revenue: $('#create-revenue').val(),
+        region: $('#create-region').val()
     };
     $.ajax({
         url: '/accounts',
