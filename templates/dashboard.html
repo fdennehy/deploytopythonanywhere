@@ -455,7 +455,7 @@
     let healthScoreChart = null;
 
     function fetchHealthScoreChartData() {
-        $.get('/insights/avg_health_score_per_account', function(data) {
+        $.get('/accounts/insights', function(data) {
             const labels = data.map(row => row.account_name);
             const scores = data.map(row => row.avg_health_score);
 
