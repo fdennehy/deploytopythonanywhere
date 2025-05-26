@@ -53,7 +53,41 @@
 </div>
 
 <script>
-    // === Account Viewer Functions ===
+
+
+    // ##### FUNCTIONS TO VALIDATE DATA ENTRY #####
+
+    // Function to confirm positive number entered (for Revenue entry)
+    function isPositiveNumber(value) {
+    return !isNaN(value) && Number(value) > 0;
+    }
+    // Simple regex URL validation
+    function isValidURL(string) {
+    const pattern = /^(https?:\/\/)?([\w\-]+)+([\w\-\._~:/?#[\]@!$&'()*+,;=]+)?$/i;
+    return pattern.test(string);
+    }
+
+    // Validate email format
+    function isValidEmail(email) {
+    const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return pattern.test(email);
+    }
+
+    // validate Health Score is between 0 and 100
+    function isValidHealthScore(score) {
+    const num = Number(score);
+    return !isNaN(num) && num >= 0 && num <= 100;
+    }
+
+    // validate phone number
+    function isValidPhone(phone) {
+    const pattern = /^[\d\s()+-]+$/;
+    return pattern.test(phone);
+    }
+
+    // ##### ACCOUNT VIEWER FUNCTIONS #####
+
+
     function viewAllAccounts() {
         $.get("/accounts", function(data) {
             if (!Array.isArray(data)) return $('#output-area').html('<p>Error retrieving accounts.</p>');
@@ -97,6 +131,32 @@
     }
 
     function createAccount() {
+        
+        // Get all input values and trim whitespace
+        const name = $('#create-name').val().trim();
+        const website = $('#create-website').val().trim();
+        const revenue = $('#create-revenue').val().trim();
+        const region = $('#create-region').val().trim();
+
+        // Check if any field is empty
+        if (!name || !website || !revenue || !region) {
+            $('#create-result').html('<div class="text-danger">Please fill in all fields before submitting.</div>');
+            return; // Stop execution if validation fails
+        }
+        
+        // Use regex url validation function
+        if (!isValidURL(website)) {
+        $('#create-result').html('<div class="text-danger">Please enter a valid website URL.</div>');
+        return;
+        }
+        
+        // confirm a positive number has been entered for Revenue
+        if (!isPositiveNumber(revenue)) {
+        $('#create-result').html('<div class="text-danger">Revenue must be a positive number.</div>');
+        return;
+        }
+
+        // Proceed if all fields are valid
         const payload = {
             name: $('#create-name').val(),
             website: $('#create-website').val(),
@@ -163,7 +223,9 @@
         });
     }
 
-    // === Contact Viewer Functions ===
+    // ###### CONTACT VIEWER FUNCTIONS #####
+
+
     function viewAllContacts() {
         $.get("/contacts", function(data) {
             if (!Array.isArray(data)) return $('#output-area').html('<p>Error retrieving contacts.</p>');
@@ -227,7 +289,7 @@
     }
 
     function createContact() {
-        // Get all input values
+        // Get all input values and trim whitespace
         const firstName = $('#create-contact-first-name').val().trim();
         const lastName = $('#create-contact-last-name').val().trim();
         const email = $('#create-contact-email').val().trim();
@@ -239,6 +301,26 @@
         if (!firstName || !lastName || !email || !phone || !healthScore || !accountId) {
             $('#create-contact-result').html('<div class="text-danger">Please fill in all fields before submitting.</div>');
             return; // Stop further execution
+        }
+
+            if (!isValidEmail(email)) {
+        $('#create-contact-result').html('<div class="text-danger">Please enter a valid email address.</div>');
+        return;
+        }
+
+        if (!isValidPhone(phone)) {
+            $('#create-contact-result').html('<div class="text-danger">Please enter a valid phone number.</div>');
+            return;
+        }
+
+        if (!isValidHealthScore(health_score)) {
+            $('#create-contact-result').html('<div class="text-danger">Health Score must be between 0 and 100.</div>');
+            return;
+        }
+        
+        if (isNaN(Number(account_id)) || Number(account_id) <= 0) {
+            $('#create-contact-result').html('<div class="text-danger">Account ID must be a positive number.</div>');
+            return;
         }
 
         // If all fields are valid, proceed to AJAX call
