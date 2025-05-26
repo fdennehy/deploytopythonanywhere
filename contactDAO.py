@@ -57,6 +57,7 @@ class contactDAO:
             sql="SELECT * FROM contact where id = %s"
             cursor.execute(sql, (id,))
             result = cursor.fetchone()
+            print("Raw DB row:", result) # debug
             return self.convertContactToDictionary(result) if result else None
         except mysql.connector.Error as err:
             print(f"DB Error in findContactByID: {err}")
