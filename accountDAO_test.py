@@ -53,5 +53,5 @@ print(dao.getAllAccounts())
 
 # Re-hydrate the database
 print("\n Inserting dummy account data: \n")
-dao.dummyDataInsert()
+dao.dummyAccountDataInsert()
 print(dao.getAllAccounts())
