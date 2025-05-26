@@ -5,48 +5,43 @@ from contactDAO import contactDAO
 dao = contactDAO() # create an instance
 
 # GET all contacts
-print("GET all contacts:")
-all_contacts = get_all_contacts()
-print(all_contacts, "\n")
+print("\n GET all contacts: \n")
+print(dao.getAllContacts())
 
 # CREATE a new contact
-print("CREATE new contact:")
-new_contact_data = {
+print("Creating a new contact 'DAO Tester': \n")
+new_contact = dao.createContact ({
     "first_name": "DAO",
     "last_name": "Tester",
     "email": "dao.tester@example.com",
     "phone": "555-0100",
     "health_score": 75,
-    "account_id": 14  # Make sure this account ID exists in your DB
-}
-new_contact_id = create_contact(new_contact_data)
-print(f"Created contact with ID: {new_contact_id}\n")
+    "account_id": 3  # Make sure this account ID exists in your DB
+})
+new_contact_id = new_contact['id']
+print(f"Created contact {new_contact} \n")
 
-# GET the new contact by ID
-print(f"GET contact by ID {new_contact_id}:")
-contact = get_contact_by_id(new_contact_id)
-print(contact, "\n")
+# GET new contact by ID
+print("\n Testing find contact by ID function: \n")
+print(dao.findContactByID(new_contact_id))
 
 # UPDATE the contact
-print(f"UPDATE contact with ID {new_contact_id}:")
-updated_data = {
+print(f"\nTesting update contact function on contact with ID {new_contact_id} \n")
+updated_contact = dao.updateContact(new_contact_id, {
     "first_name": "UpdatedDAO",
     "last_name": "Tester",
     "email": "updated.dao@example.com",
     "phone": "555-0200",
     "health_score": 85,
     "account_id": 14
-}
-update_success = update_contact(new_contact_id, updated_data)
-print("Update success:", update_success)
-print(get_contact_by_id(new_contact_id), "\n")
+})
+print(f"\n Updated account {updated_contact} with ID: {new_contact_id} \n")
 
 # DELETE the contact
 print(f"DELETE contact with ID {new_contact_id}:")
-delete_success = delete_contact(new_contact_id)
-print("Delete success:", delete_success)
+dao.deleteContact(new_contact_id)
+assert dao.findContactByID(new_contact_id) is None, "Deletion failed"
 
-# Confirm deletion
-print(f"GET deleted contact ID {new_contact_id} (should be None):")
-deleted_contact = get_contact_by_id(new_contact_id)
-print(deleted_contact)
+# Confirm recent addition has been deleted
+print("\nContact deleted. Veryifying deletion: \n")
+print(dao.getAllContacts())
