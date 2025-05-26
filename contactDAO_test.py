@@ -33,7 +33,7 @@ updated_contact = dao.updateContact(new_contact_id, {
     "email": "updated.dao@example.com",
     "phone": "555-0200",
     "health_score": 85,
-    "account_id": 14
+    "account_id": 3
 })
 print(f"\n Updated account {updated_contact} with ID: {new_contact_id} \n")
 
