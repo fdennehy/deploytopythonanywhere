@@ -87,7 +87,13 @@ print("\n========== CONTACT TESTS ==========\n")
 # 2.1 Get all contacts
 print("\n GET all contacts: \n")
 response = requests.get(CONTACT_URL)
-print(response.json())
+print("Status Code:", response.status_code) # debug
+print("Raw Response:", response.text) # debug
+
+if response.status_code == 200:
+    print("JSON Response:", response.json())
+else:
+    print("Failed to retrieve contacts.")
 
 # 2.2 Create a new contact
 print("\n Create new contact (POST): \n")
