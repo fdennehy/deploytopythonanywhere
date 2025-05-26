@@ -34,7 +34,7 @@ function viewAllAccounts() {
         if (!Array.isArray(data)) return $('#output-area').html('<p>Error retrieving accounts.</p>');
         let html = '<h4>All Accounts</h4><table class="table"><thead><tr><th>ID</th><th>Name</th><th>Website</th><th>Revenue</th><th>Region</th></tr></thead><tbody>';
         data.forEach(acc => {
-            html += `<tr><td>${acc.id}</td><td>${acc.account_name || ''}</td><td>${acc.website || ''}</td><td>${acc.revenue || ''}</td><td>${acc.region || ''}</td></tr>`;
+            html += `<tr><td>${acc.id}</td><td>${acc.name || ''}</td><td>${acc.website || ''}</td><td>${acc.revenue || ''}</td><td>${acc.region || ''}</td></tr>`;
         });
         html += '</tbody></table>';
         $('#output-area').html(html);
@@ -54,7 +54,7 @@ function findById() {
     const id = $('#find-id').val();
     $.get(`/accounts/${id}`, function(acc) {
         const html = `<table class="table"><tr><th>ID</th><th>Name</th><th>Website</th><th>Revenue</th><th>Region</th></tr>
-                      <tr><td>${acc.id}</td><td>${acc.account_name}</td><td>${acc.website}</td><td>${acc.revenue}</td><td>${acc.region}</td></tr></table>`;
+                      <tr><td>${acc.id}</td><td>${acc.name}</td><td>${acc.website}</td><td>${acc.revenue}</td><td>${acc.region}</td></tr></table>`;
         $('#result').html(html);
     }).fail(() => $('#result').html('<div class="text-danger">Account not found.</div>'));
 }
@@ -75,7 +75,7 @@ function showUpdateById() {
 function updateById() {
     const id = $('#update-id').val();
     const payload = {
-        account_name: $('#update-name').val(),
+        name: $('#update-name').val(),
         website: $('#update-website').val(),
         revenue: $('#update-revenue').val(),
         region: $('#update-region').val()
@@ -123,7 +123,7 @@ function showCreateAccount() {
 
 function createAccount() {
     const payload = {
-        account_name: $('#create-name').val(),
+        name: $('#create-name').val(),
         website: $('#create-website').val(),
         revenue: $('#create-revenue').val(),
         region: $('#create-region').val()
