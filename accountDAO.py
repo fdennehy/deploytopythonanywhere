@@ -161,6 +161,27 @@ class accountDAO:
         finally:
             self.closeAll()
 
+    # Function to retrieve average health scores per account
+    def avgAccountHealthScore(self):
+        try:
+            cursor = self.getcursor()
+            sql = """
+            SELECT a.name AS account_name, 
+            ROUND(AVG(c.health_score), 2) AS avg_health_score
+            FROM account a
+            JOIN contact c ON a.id = c.account_id
+            GROUP BY a.id
+            ORDER BY avg_health_score DESC
+            """
+            cursor.execute(sql)
+            results = cursor.fetchall()
+            return results
+        except mysql.connector.Error as err:
+            print(f"DB Error in avgAccountHealthScore: {err}")
+            return None
+        finally:
+            self.closeAll()
+
     # Function to convert account details to a dictionary object, making JSON responses clean
     def convertAccountToDictionary(self, resultLine):
         attkeys=['id','name','website', 'revenue', 'region']

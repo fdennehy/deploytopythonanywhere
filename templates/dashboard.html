@@ -49,6 +49,12 @@
         <div class="col-md-9 p-3" id="output-area">
             <h4>Welcome! Select an option on the left.</h4>
         </div>
+
+        <!-- Insights Area -->
+        <div class="col-md-3 p-3">
+            <h5>Average Health Score per Account</h5>
+            <canvas id="healthScoreChart"></canvas>
+        </div>
     </div>
 </div>
 
@@ -56,6 +62,7 @@
 
 
     // ##### FUNCTIONS TO VALIDATE DATA ENTRY #####
+
 
     // Function to confirm positive number entered (for Revenue entry)
     function isPositiveNumber(value) {
@@ -84,6 +91,7 @@
     const pattern = /^[\d\s()+-]+$/;
     return pattern.test(phone);
     }
+
 
     // ##### ACCOUNT VIEWER FUNCTIONS #####
 
@@ -168,7 +176,10 @@
             method: 'POST',
             data: JSON.stringify(payload),
             contentType: 'application/json',
-            success: res => $('#create-result').html(`<div class="text-success">Account created. ID: ${res.id}</div>`),
+            success: res => {
+                $('#create-result').html(`<div class="text-success">Account created. ID: ${res.id}</div>`),
+                fetchHealthScoreChartData();
+            },
             error: err => $('#create-result').html(`<div class="text-danger">Creation failed.</div>`)
         });
     }
@@ -199,7 +210,10 @@
             method: 'PUT',
             data: JSON.stringify(payload),
             contentType: 'application/json',
-            success: res => $('#update-result').html(`<div class="text-success">Account updated successfully.</div>`),
+            success: res => {
+                $('#update-result').html(`<div class="text-success">Account updated successfully.</div>`),
+                fetchHealthScoreChartData();
+            },   
             error: err => $('#update-result').html(`<div class="text-danger">Failed to update. Check if ID exists.</div>`)
         });
     }
@@ -218,7 +232,10 @@
         $.ajax({
             url: `/accounts/${id}`,
             method: 'DELETE',
-            success: res => $('#delete-result').html(`<div class="text-success">Account deleted.</div>`),
+            success: res => {
+                $('#delete-result').html(`<div class="text-success">Account deleted.</div>`),
+                fetchHealthScoreChartData();
+            },
             error: err => $('#delete-result').html(`<div class="text-danger">Delete failed. ID not found.</div>`)
         });
     }
@@ -317,7 +334,7 @@
             $('#create-contact-result').html('<div class="text-danger">Health Score must be between 0 and 100.</div>');
             return;
         }
-        
+
         if (isNaN(Number(account_id)) || Number(account_id) <= 0) {
             $('#create-contact-result').html('<div class="text-danger">Account ID must be a positive number.</div>');
             return;
@@ -337,7 +354,10 @@
             method: 'POST',
             data: JSON.stringify(payload),
             contentType: 'application/json',
-            success: res => $('#create-contact-result').html(`<div class="text-success">Contact created. ID: ${res.id}</div>`),
+            success: res => {
+                $('#create-contact-result').html(`<div class="text-success">Contact created. ID: ${res.id}</div>`),
+                fetchHealthScoreChartData();
+            },
             error: err => $('#create-contact-result').html(`<div class="text-danger">Creation failed.</div>`)
         });
     }
@@ -361,7 +381,10 @@
         $.ajax({
             url: `/contacts/dummy?count=${count}`,
             method: 'POST',
-            success: res => $('#dummy-result').html(`<div class="text-success">${count} dummy contacts created.</div>`),
+            success: res => {
+                $('#dummy-result').html(`<div class="text-success">${count} dummy contacts created.</div>`),
+                fetchHealthScoreChartData();
+            },
             error: err => $('#dummy-result').html('<div class="text-danger">Failed to create dummy contacts.</div>')
         });
     }
@@ -396,7 +419,10 @@
             method: 'PUT',
             data: JSON.stringify(payload),
             contentType: 'application/json',
-            success: res => $('#update-contact-result').html(`<div class="text-success">Contact updated successfully.</div>`),
+            success: res => {
+                $('#update-contact-result').html(`<div class="text-success">Contact updated successfully.</div>`),
+                fetchHealthScoreChartData();
+            },
             error: err => $('#update-contact-result').html(`<div class="text-danger">Failed to update. Check if ID exists.</div>`)
         });
     }
@@ -415,10 +441,61 @@
         $.ajax({
             url: `/contacts/${id}`,
             method: 'DELETE',
-            success: res => $('#delete-contact-result').html(`<div class="text-success">Contact deleted.</div>`),
+            success: res => {
+                $('#delete-contact-result').html(`<div class="text-success">Contact deleted.</div>`),
+                fetchHealthScoreChartData();
+            },
             error: err => $('#delete-contact-result').html(`<div class="text-danger">Delete failed. ID not found.</div>`)
         });
     }
+
+
+    // ##### REAL TIME ANALYTICS / INSIGHTS FUNCTIONS #####
+
+    let healthScoreChart = null;
+
+    function fetchHealthScoreChartData() {
+        $.get('/insights/avg_health_score_per_account', function(data) {
+            const labels = data.map(row => row.account_name);
+            const scores = data.map(row => row.avg_health_score);
+
+            const ctx = document.getElementById('healthScoreChart').getContext('2d');
+
+             if (healthScoreChart) {
+                healthScoreChart.destroy();
+            }
+
+            healthScoreChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Avg Health Score',
+                        data: scores,
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        });
+    }
+
+    // Load chart on page load
+    $(document).ready(fetchHealthScoreChartData);
+
+    // Expose function globally so it can be called after CRUD operations
+    window.fetchHealthScoreChartData = fetchHealthScoreChartData;
+
 </script>
 </body>
 </html>

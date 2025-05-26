@@ -20,7 +20,9 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 def dashboard():
     return render_template("dashboard.html")
 
+
 ### ACCOUNT ROUTING ###
+
 
 # Route to get all accounts: curl https://fdennehy.pythonanywhere.com/accounts
 @app.route('/accounts')
@@ -97,7 +99,14 @@ def insertDummyAccounts():
     else:
         return jsonify({"error": "Failed to insert dummy account data."}), 500
 
+# Route to 
+@app.route('/accounts/insights', methods=['GET'])
+def avg_health_score_per_account():
+    result = accountDAOInstance.avgAccountHealthScore()
+    return jsonify(result)
+
 ### CONTACT ROUTING ###
+
 
 # Route to get all contacts: curl https://fdennehy.pythonanywhere.com/contacts
 @app.route('/contacts')
