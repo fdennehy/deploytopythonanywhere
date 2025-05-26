@@ -7,7 +7,7 @@ ACCOUNT_URL = "https://fdennehy.pythonanywhere.com/accounts"
 CONTACT_URL = "https://fdennehy.pythonanywhere.com/contacts"
 
 
-print("\n========== ACCOUNT TESTS ==========\n")
+print("\n ACCOUNT TESTS \n")
 
 
 # 1.1 Get all accounts: curl https://fdennehy.pythonanywhere.com/accounts
@@ -81,7 +81,7 @@ response = requests.get(ACCOUNT_URL)
 print(response.json())
 
 
-print("\n========== CONTACT TESTS ==========\n")
+print("\n CONTACT TESTS \n")
 
 
 # 2.1 Get all contacts
@@ -164,4 +164,4 @@ else:
 # 2.8. Confirm dummy contact creation
 print("\n Confirming dummy contacts have been created: \n")
 response = requests.get(CONTACT_URL)
-print(response.json())
+print(response.json()
