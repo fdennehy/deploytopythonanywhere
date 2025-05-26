@@ -141,7 +141,7 @@ class accountDAO:
             self.closeAll()
 
     # Function to hydrate database with dummy data.
-    def dummyDataInsert(self):
+    def dummyAccountDataInsert(self):
         try:
             cursor = self.getcursor()
             sql = """
@@ -154,9 +154,9 @@ class accountDAO:
             """
             cursor.execute(sql)
             self.connection.commit()
-            return{"status": "dummy data inserted"}
+            return{"status": "dummy account data inserted"}
         except mysql.connector.Error as err:
-            print(f"DB Error in dummyDataInsert: {err}")
+            print(f"DB Error in dummyAccountDataInsert: {err}")
             return None
         finally:
             self.closeAll()

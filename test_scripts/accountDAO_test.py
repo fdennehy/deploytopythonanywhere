@@ -1,6 +1,6 @@
 # Script to test the various functions in the DAO
 
-from account_DAO import accountDAO
+from wsaa.deploytopythonanywhere.dao.accountDAO import accountDAO
 
 dao = accountDAO() # create an instance
 
