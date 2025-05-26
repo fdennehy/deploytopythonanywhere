@@ -17,8 +17,8 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 # Serve html file to root url /
 @app.route('/')
 @cross_origin()
-def account_viewer():
-    return render_template("account_viewer.html")
+def dashboard():
+    return render_template("dashboard.html")
 
 ### ACCOUNT ROUTING ###
 
