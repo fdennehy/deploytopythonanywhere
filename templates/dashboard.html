@@ -169,7 +169,15 @@
             if (!Array.isArray(data)) return $('#output-area').html('<p>Error retrieving contacts.</p>');
             let html = '<h4>All Contacts</h4><table class="table table-striped table-bordered"><thead><tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Account ID</th></tr></thead><tbody>';
             data.forEach(contact => {
-                html += `<tr><td>${contact.id}</td><td>${contact.first_name || ''}</td><td>${contact.last_name || ''}</td><td>${contact.email || ''}</td><td>${contact.account_id || ''}</td></tr>`;
+                html += `<tr>
+                    <td>${contact.id}</td>
+                    <td>${contact.first_name || ''}</td>
+                    <td>${contact.last_name || ''}</td>
+                    <td>${contact.email || ''}</td>
+                    <td>${contact.phone || ''}</td>
+                    <td>${contact.health_score || ''}</td>
+                    <td>${contact.account_id || ''}</td>
+                </tr>`;
             });
             html += '</tbody></table>';
             $('#output-area').html(html);
@@ -190,7 +198,16 @@
         if (!id) return alert('Please enter a Contact ID.');
         $.get(`/contacts/${id}`, function(contact) {
             const html = `<table class="table table-bordered"><tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Account ID</th></tr>
-                          <tr><td>${contact.id}</td><td>${contact.first_name}</td><td>${contact.last_name}</td><td>${contact.email}</td><td>${contact.account_id}</td></tr></table>`;
+                          <tr>
+                            <td>${contact.id}</td>
+                            <td>${contact.first_name}</td>
+                            <td>${contact.last_name}</td>
+                            <td>${contact.email}</td>
+                            <td>${contact.phone || ''}</td>
+                            <td>${contact.health_score || ''}</td>
+                            <td>${contact.account_id}</td>
+                          </tr>
+                          </table>`;
             $('#contact-find-result').html(html);
         }).fail(() => $('#contact-find-result').html('<div class="text-danger">Contact not found.</div>'));
     }
@@ -201,6 +218,8 @@
             <input id="create-contact-first-name" type="text" class="form-control mb-2" placeholder="First Name" />
             <input id="create-contact-last-name" type="text" class="form-control mb-2" placeholder="Last Name" />
             <input id="create-contact-email" type="email" class="form-control mb-2" placeholder="Email" />
+            <input id="create-contact-phone" type="phone" class="form-control mb-2" placeholder="Phone" />
+            <input id="create-contact-health_score" type="health_score" class="form-control mb-2" placeholder="Health Score" />
             <input id="create-contact-account-id" type="number" class="form-control mb-2" placeholder="Account ID" />
             <button class="btn btn-success" onclick="createContact()">Create</button>
             <div id="create-contact-result" class="mt-3"></div>
@@ -212,6 +231,8 @@
             first_name: $('#create-contact-first-name').val(),
             last_name: $('#create-contact-last-name').val(),
             email: $('#create-contact-email').val(),
+            phone: $('#create-contact-phone').val(),
+            health_score: $('#create-contact-health_score').val(),
             account_id: $('#create-contact-account-id').val()
         };
         $.ajax({
@@ -255,6 +276,8 @@
             <input id="update-contact-first-name" type="text" class="form-control mb-2" placeholder="First Name" />
             <input id="update-contact-last-name" type="text" class="form-control mb-2" placeholder="Last Name" />
             <input id="update-contact-email" type="email" class="form-control mb-2" placeholder="Email" />
+            <input id="update-contact-phone" type="phone" class="form-control mb-2" placeholder="phone" />
+            <input id="update-contact-health_score" type="health_score" class="form-control mb-2" placeholder="health_score" />
             <input id="update-contact-account-id" type="number" class="form-control mb-2" placeholder="Account ID" />
             <button class="btn btn-info" onclick="updateContactById()">Update</button>
             <div id="update-contact-result" class="mt-3"></div>
@@ -267,6 +290,8 @@
             first_name: $('#update-contact-first-name').val(),
             last_name: $('#update-contact-last-name').val(),
             email: $('#update-contact-email').val(),
+            phone: $('#update-contact-phone').val(),
+            health_score: $('#update-contact-health_score').val(),
             account_id: $('#update-contact-account-id').val()
         };
         $.ajax({
