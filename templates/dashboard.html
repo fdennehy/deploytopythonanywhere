@@ -1,457 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>CSM Tool - Account Viewer</title>
-  <style>
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f9fafb;
-    color: #333;
-    margin: 20px auto;
-    max-width: 1200px;
-    padding: 0 20px 40px;
-    text-align: center; /* Center main text content */
-  }
-
-  h1, h2 {
-    color: #2c3e50;
-    margin-bottom: 12px;
-    font-weight: 700;
-  }
-
-  /* Center h1 and h2 explicitly for clarity */
-  h1 {
-    margin-bottom: 30px;
-  }
-
-  section > h2 {
-    margin-top: 40px;
-    margin-bottom: 20px;
-  }
-
-  button {
-    background-color: #007bff;
-    border: none;
-    color: white;
-    padding: 10px 18px;
-    margin: 8px 6px 12px 6px;
-    border-radius: 5px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    font-size: 1rem;
-    display: inline-block;
-  }
-
-  button:hover {
-    background-color: #0056b3;
-  }
-
-  button:disabled {
-    background-color: #a0a0a0;
-    cursor: not-allowed;
-  }
-
-  /* Container for the three action buttons - center them */
-  section:nth-of-type(2) {
-    text-align: center;
-  }
-
-  label {
-    display: block;
-    margin-bottom: 10px;
-    font-weight: 600;
-    text-align: left;
-  }
-
-  input, select {
-    width: 100%;
-    padding: 8px 10px;
-    margin-top: 4px;
-    margin-bottom: 14px;
-    border: 1.8px solid #ccc;
-    border-radius: 5px;
-    font-size: 1rem;
-    transition: border-color 0.3s ease;
-  }
-
-  input:focus, select:focus {
-    border-color: #007bff;
-    outline: none;
-  }
-
-  form {
-    background: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 12px rgba(0,0,0,0.08);
-    height: auto;
-    box-sizing: border-box;
-    flex-grow: 1;
-  }
-
-  /* Updated formsContainer: use CSS Grid with fixed 3 equal columns on wider screens */
-  #formsContainer {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* exactly 3 equal columns */
-    gap: 20px;
-    margin-bottom: 40px;
-  }
-
-  /* Each form tile styling */
-  #createAccountTile, #getDeleteAccountTile, #updateAccountTile {
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 0 12px rgba(0,0,0,0.08);
-    padding: 20px 25px;
-    box-sizing: border-box;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-  }
-
-  #statusMessage {
-    margin: 20px 0;
-    padding: 12px 18px;
-    border-radius: 6px;
-    font-weight: 600;
-    display: none;
-  }
-
-  #statusMessage.success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-  }
-
-  #statusMessage.error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-  }
-
-  #statusMessage.loading {
-    background-color: #fff3cd;
-    color: #856404;
-    border: 1px solid #ffeeba;
-  }
-
-  #output {
-    margin-top: 20px;
-    text-align: left; /* output left aligned for readability */
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-  }
-
-  table, th, td {
-    border: 1px solid #ccc;
-  }
-
-  th, td {
-    padding: 10px;
-    text-align: left;
-  }
-
-  th {
-    background-color: #f0f0f0;
-  }
-
-  /* Responsive for smaller screens: one column */
-  @media (max-width: 900px) {
-    #formsContainer {
-      grid-template-columns: 1fr;
-    }
-  }
-</style>
+    <meta charset="UTF-8">
+    <title>CSM Dashboard</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            display: flex;
+        }
+        #sidebar {
+            width: 250px;
+            padding: 20px;
+            border-right: 1px solid #ccc;
+            height: 100vh;
+        }
+        #content {
+            flex-grow: 1;
+            padding: 20px;
+        }
+        .form-section {
+            display: none;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Customer Success Management Tool</h1>
+    <div id="sidebar">
+        <h4>Account Viewer</h4>
+        <button class="btn btn-primary btn-block mb-2" onclick="viewAllAccounts()">View All Accounts</button>
+        <button class="btn btn-secondary btn-block mb-2" onclick="showFindForm()">Find Account by ID</button>
+        <button class="btn btn-warning btn-block mb-2" onclick="showUpdateForm()">Update Account by ID</button>
+        <button class="btn btn-danger btn-block" onclick="showDeleteForm()">Delete Account by ID</button>
+    </div>
 
-    <div id="statusMessage"></div>
+    <div id="content">
+        <div id="output"></div>
 
-    <section>
-        <h2>Account Actions</h2>
-        <button onclick="getAllAccounts(this)">Get All Accounts</button>
-        <button onclick="insertDummyAccounts(this)">Insert Dummy Data</button>
-        <button onclick="deleteAllAccounts(this)">Delete All Accounts</button>
-    </section>
+        <div id="findForm" class="form-section">
+            <input type="number" id="findId" class="form-control" placeholder="Enter Account ID">
+            <button class="btn btn-info mt-2" onclick="findAccount()">Find</button>
+        </div>
 
-    <section id="formsContainer">
-        <section class="form-tile" id="createAccountTile">
-            <h2>Create New Account</h2>
-            <form id="createAccountForm" onsubmit="createAccount(event)">
-            <label for="createName">Name:</label>
-            <input type="text" id="createName" name="name" required>
+        <div id="updateForm" class="form-section">
+            <input type="number" id="updateId" class="form-control" placeholder="Account ID">
+            <input type="text" id="updateName" class="form-control mt-2" placeholder="Account Name">
+            <input type="text" id="updateWebsite" class="form-control mt-2" placeholder="Website">
+            <input type="text" id="updateRevenue" class="form-control mt-2" placeholder="Revenue">
+            <input type="text" id="updateRegion" class="form-control mt-2" placeholder="Region">
+            <button class="btn btn-warning mt-2" onclick="updateAccount()">Update</button>
+        </div>
 
-            <label for="createWebsite">Website:</label>
-            <input type="url" id="createWebsite" name="website">
+        <div id="deleteForm" class="form-section">
+            <input type="number" id="deleteId" class="form-control" placeholder="Enter Account ID">
+            <button class="btn btn-danger mt-2" onclick="deleteAccount()">Delete</button>
+        </div>
+    </div>
 
-            <label for="createRevenue">Revenue:</label>
-            <input type="number" id="createRevenue" name="revenue" step="0.01">
-
-            <label for="createRegion">Region:</label>
-            <select id="createRegion" name="region" required>
-                <option value="" disabled selected>Select a region</option>
-                <option value="NA">North America</option>
-                <option value="EU">Europe</option>
-                <option value="APAC">APAC</option>
-            </select>
-
-            <button type="submit">Create Account</button>
-        </form>
-    </section>
-
-    <section class="form-tile" id="getDeleteAccountTile">
-        <h2>Get or Delete Account by ID</h2>
-        <label>Account ID:</label>
-        <input type="number" id="accountId" required>
-        <button onclick="getAccountById()">Get Account</button>
-        <button onclick="deleteAccountById()">Delete Account</button>
-    </section>
-
-    <section class="form-tile" id="updateAccountTile">
-        <h2>Update Account</h2>
-        <form id="updateAccountForm" onsubmit="updateAccount(event)">
-        <label for="updateId">Account ID:</label>
-        <input type="number" id="updateId" name="id" required>
-
-        <label for="updateName">Name:</label>
-        <input type="text" id="updateName" name="name" required>
-
-        <label for="updateWebsite">Website:</label>
-        <input type="url" id="updateWebsite" name="website">
-
-        <label for="updateRevenue">Revenue:</label>
-        <input type="number" id="updateRevenue" name="revenue" step="0.01">
-
-        <label for="updateRegion">Region:</label>
-        <select id="updateRegion" name="region" required>
-            <option value="" disabled selected>Select a region</option>
-            <option value="NA">North America</option>
-            <option value="EU">Europe</option>
-            <option value="APAC">APAC</option>
-        </select>
-
-        <button type="submit">Update Account</button>
-        </form>
-        </section>
-    </section>
-
-    <section>
-        <h2>Output</h2>
-        <div id="output">(Output will appear here)</div>
-    </section>
-
-  <script>
-    const BASE_URL = "https://fdennehy.pythonanywhere.com/accounts";
-
-    function showStatus(message, type = "success") {
-      const status = document.getElementById("statusMessage");
-      status.className = type;
-      status.textContent = message;
-      status.style.display = "block";
-
-      setTimeout(() => {
-        status.style.display = "none";
-      }, 4000);
-    }
-
-    function disableButton(button, disable = true) {
-      if (button) {
-        button.disabled = disable;
-      }
-    }
-
-    function renderOutput(data) {
-      const output = document.getElementById("output");
-      output.innerHTML = "";
-
-      if (Array.isArray(data)) {
-        const table = document.createElement("table");
-        const thead = document.createElement("thead");
-        const tbody = document.createElement("tbody");
-
-        const headers = Object.keys(data[0] || {});
-        thead.innerHTML = "<tr>" + headers.map(h => `<th>${h}</th>`).join("") + "</tr>";
-
-        data.forEach(item => {
-          const row = "<tr>" + headers.map(h => `<td>${item[h]}</td>`).join("") + "</tr>";
-          tbody.innerHTML += row;
-        });
-
-        table.appendChild(thead);
-        table.appendChild(tbody);
-        output.appendChild(table);
-      } else if (typeof data === "object") {
-        const table = document.createElement("table");
-        for (const [key, value] of Object.entries(data)) {
-          const row = `<tr><th>${key}</th><td>${value}</td></tr>`;
-          table.innerHTML += row;
+    <script>
+        function viewAllAccounts() {
+            hideForms();
+            $.get("/accounts", function(data) {
+                let html = '<table class="table table-bordered"><thead><tr><th>ID</th><th>Name</th><th>Website</th><th>Revenue</th><th>Region</th></tr></thead><tbody>';
+                data.forEach(a => {
+                    html += `<tr><td>${a.id}</td><td>${a.name}</td><td>${a.website}</td><td>${a.revenue}</td><td>${a.region}</td></tr>`;
+                });
+                html += '</tbody></table>';
+                $('#output').html(html);
+            });
         }
-        output.appendChild(table);
-      } else {
-        output.textContent = data;
-      }
-    }
 
-    async function getAllAccounts(button) {
-      disableButton(button);
-      showStatus("Loading accounts...", "loading");
-      try {
-        const res = await fetch(BASE_URL);
-        const data = await res.json();
-        renderOutput(data);
-        showStatus("Accounts retrieved successfully.");
-      } catch (err) {
-        showStatus("Failed to fetch accounts: " + err.message, "error");
-      }
-      disableButton(button, false);
-    }
-
-    async function insertDummyAccounts(button) {
-      disableButton(button);
-      showStatus("Inserting dummy data...", "loading");
-      try {
-        const res = await fetch(`${BASE_URL}/dummy`, { method: "POST" });
-        const data = await res.json();
-        renderOutput(data);
-        showStatus("Dummy accounts inserted successfully.");
-      } catch (err) {
-        showStatus("Error inserting dummy data: " + err.message, "error");
-      }
-      disableButton(button, false);
-    }
-
-    async function deleteAllAccounts(button) {
-      disableButton(button);
-      showStatus("Deleting all accounts...", "loading");
-      try {
-        const res = await fetch(`${BASE_URL}/wipe`, { method: "DELETE" });
-        const data = await res.json();
-        renderOutput(data);
-        showStatus("All accounts deleted.");
-      } catch (err) {
-        showStatus("Error deleting accounts: " + err.message, "error");
-      }
-      disableButton(button, false);
-    }
-
-    async function createAccount(event) {
-      event.preventDefault();
-      const button = event.submitter;
-      disableButton(button);
-      showStatus("Creating account...", "loading");
-
-      const account = {
-        name: document.getElementById("name").value,
-        website: document.getElementById("website").value,
-        revenue: document.getElementById("revenue").value,
-        region: document.getElementById("region").value
-      };
-
-      try {
-        const res = await fetch(BASE_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(account)
-        });
-        const data = await res.json();
-        renderOutput(data);
-        showStatus("Account created successfully.");
-        document.getElementById("createAccountForm").reset();
-      } catch (err) {
-        showStatus("Error creating account: " + err.message, "error");
-      }
-
-      disableButton(button, false);
-    }
-
-    async function getAccountById(button) {
-      const id = document.getElementById("accountId").value;
-      if (!id) return showStatus("Please enter a valid ID.", "error");
-
-      disableButton(button);
-      showStatus("Fetching account...", "loading");
-
-      try {
-        const res = await fetch(`${BASE_URL}/${id}`);
-        const data = await res.json();
-        if (res.ok) {
-          renderOutput(data);
-          showStatus("Account retrieved.");
-        } else {
-          showStatus(data.error || "Account not found.", "error");
+        function showFindForm() {
+            hideForms();
+            $('#findForm').show();
         }
-      } catch (err) {
-        showStatus("Error: " + err.message, "error");
-      }
 
-      disableButton(button, false);
-    }
-
-    async function deleteAccountById(button) {
-      const id = document.getElementById("accountId").value;
-      if (!id) return showStatus("Please enter a valid ID.", "error");
-
-      disableButton(button);
-      showStatus("Deleting account...", "loading");
-
-      try {
-        const res = await fetch(`${BASE_URL}/${id}`, { method: "DELETE" });
-        const data = await res.json();
-        if (res.ok && data.success) {
-          renderOutput(data);
-          showStatus("Account deleted.");
-        } else {
-          showStatus(data.error || "Deletion failed.", "error");
+        function findAccount() {
+            const id = $('#findId').val();
+            $.get(`/accounts/${id}`, function(data) {
+                let html = '<table class="table table-bordered"><thead><tr><th>ID</th><th>Name</th><th>Website</th><th>Revenue</th><th>Region</th></tr></thead>';
+                html += `<tbody><tr><td>${data.id}</td><td>${data.name}</td><td>${data.website}</td><td>${data.revenue}</td><td>${data.region}</td></tr></tbody></table>`;
+                $('#output').html(html);
+            }).fail(() => {
+                $('#output').html('<p class="text-danger">Account not found.</p>');
+            });
         }
-      } catch (err) {
-        showStatus("Error deleting account: " + err.message, "error");
-      }
 
-      disableButton(button, false);
-    }
-
-    async function updateAccount(event) {
-      event.preventDefault();
-      const button = event.submitter;
-      disableButton(button);
-      showStatus("Updating account...", "loading");
-
-      const id = document.getElementById("updateId").value;
-      if (!id) return showStatus("Please enter ID.", "error");
-
-      const account = {
-        name: document.getElementById("updateName").value,
-        website: document.getElementById("updateWebsite").value,
-        revenue: document.getElementById("updateRevenue").value,
-        region: document.getElementById("updateRegion").value
-      };
-
-      try {
-        const res = await fetch(`${BASE_URL}/${id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(account)
-        });
-        const data = await res.json();
-        if (res.ok) {
-          renderOutput(data);
-          showStatus("Account updated.");
-        } else {
-          showStatus(data.error || "Update failed.", "error");
+        function showUpdateForm() {
+            hideForms();
+            $('#updateForm').show();
         }
-      } catch (err) {
-        showStatus("Error updating: " + err.message, "error");
-      }
 
-      disableButton(button, false);
-    }
-  </script>
+        function updateAccount() {
+            const id = $('#updateId').val();
+            const payload = {
+                name: $('#updateName').val(),
+                website: $('#updateWebsite').val(),
+                revenue: $('#updateRevenue').val(),
+                region: $('#updateRegion').val()
+            };
+            $.ajax({
+                url: `/accounts/${id}`,
+                method: "PUT",
+                contentType: "application/json",
+                data: JSON.stringify(payload),
+                success: function(result) {
+                    $('#output').html(`<p class='text-success'>Account updated: ${JSON.stringify(result)}</p>`);
+                },
+                error: function() {
+                    $('#output').html('<p class="text-danger">Update failed.</p>');
+                }
+            });
+        }
+
+        function showDeleteForm() {
+            hideForms();
+            $('#deleteForm').show();
+        }
+
+        function deleteAccount() {
+            const id = $('#deleteId').val();
+            $.ajax({
+                url: `/accounts/${id}`,
+                method: "DELETE",
+                success: function(result) {
+                    $('#output').html(`<p class='text-success'>${result.message}</p>`);
+                },
+                error: function() {
+                    $('#output').html('<p class="text-danger">Delete failed.</p>');
+                }
+            });
+        }
+
+        function hideForms() {
+            $('.form-section').hide();
+            $('#output').html('');
+        }
+    </script>
 </body>
 </html>
