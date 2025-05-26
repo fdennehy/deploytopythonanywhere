@@ -1,6 +1,7 @@
 # Script to test the various functions in the DAO
-
-from deploytopythonanywhere.dao.accountDAO import accountDAO
+# run from pythonanywhere root: cd ~/deploytopythonanywhere
+# python test_scripts/accountDAO_test.py
+from dao.accountDAO import accountDAO
 
 dao = accountDAO() # create an instance
 
