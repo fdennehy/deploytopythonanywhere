@@ -150,7 +150,7 @@ class contactDAO:
 
     # Function to convert contact details to a dictionary object, making JSON responses clean
     def convertContactToDictionary(self, resultLine):
-        attkeys=['id','account_id', 'first_name', 'last_name', 'email', 'phone', 'health_score']
+        attkeys=['id', 'first_name', 'last_name', 'email', 'phone', 'health_score','account_id']
         contact = {}
         currentkey = 0
         for attrib in resultLine:
