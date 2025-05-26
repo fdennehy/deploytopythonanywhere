@@ -4,8 +4,8 @@ from flask_cors import CORS, cross_origin
 import random # to randomly generate health scores and account ids
 
 # Import required DAO modules
-from wsaa.deploytopythonanywhere.dao.accountDAO import accountDAOInstance
-from wsaa.deploytopythonanywhere.dao.contactDAO import contactDAOInstance
+from accountDAO import accountDAOInstance
+from contactDAO import contactDAOInstance
 
 # Import requests to call Random Usert API
 import requests
