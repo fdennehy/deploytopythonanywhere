@@ -1,10 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Account Dashboard</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <style>
+        /* Scrollable tables with max height */
+        #output-area table {
+            max-height: 400px;
+            overflow-y: auto;
+            display: block;
+        }
+        .btn-group-vertical.w-100 > button {
+            width: 100%;
+            margin-bottom: 8px;
+        }
+    </style>
 </head>
 <body>
 <div class="container-fluid">
@@ -13,21 +25,23 @@
         <div class="col-md-3 bg-light p-3">
             <h4>Account Viewer</h4>
             <div class="btn-group-vertical w-100" role="group">
-                <button class="btn btn-primary mb-2" onclick="viewAllAccounts()">View All Accounts</button>
-                <button class="btn btn-secondary mb-2" onclick="showFindById()">Find Account by ID</button>
-                <button class="btn btn-success mb-2" onclick="showCreateAccount()">Create Account</button>
-                <button class="btn btn-info mb-2" onclick="showUpdateById()">Update Account by ID</button>
-                <button class="btn btn-danger mb-2" onclick="showDeleteById()">Delete Account by ID</button>
+                <button class="btn btn-primary" onclick="viewAllAccounts()">View All Accounts</button>
+                <button class="btn btn-secondary" onclick="showFindById()">Find Account by ID</button>
+                <button class="btn btn-success" onclick="showCreateAccount()">Create Account</button>
+                <button class="btn btn-info" onclick="showUpdateById()">Update Account by ID</button>
+                <button class="btn btn-danger" onclick="showDeleteById()">Delete Account by ID</button>
             </div>
 
-            <h4 class="mt-4">Contact Viewer</h4>
+            <hr />
+
+            <h4>Contact Viewer</h4>
             <div class="btn-group-vertical w-100" role="group">
-                <button class="btn btn-primary mb-2" onclick="viewAllContacts()">View All Contacts</button>
-                <button class="btn btn-secondary mb-2" onclick="showFindContactById()">Find Contact by ID</button>
-                <button class="btn btn-success mb-2" onclick="showCreateContact()">Create Contact</button>
-                <button class="btn btn-warning mb-2" onclick="showCreateDummyContacts()">Create Dummy Contact(s)</button>
-                <button class="btn btn-info mb-2" onclick="showUpdateContactById()">Update Contact by ID</button>
-                <button class="btn btn-danger mb-2" onclick="showDeleteContactById()">Delete Contact by ID</button>
+                <button class="btn btn-primary" onclick="viewAllContacts()">View All Contacts</button>
+                <button class="btn btn-secondary" onclick="showFindContactById()">Find Contact by ID</button>
+                <button class="btn btn-success" onclick="showCreateContact()">Create Contact</button>
+                <button class="btn btn-warning" onclick="showCreateDummyContacts()">Create Dummy Contact(s)</button>
+                <button class="btn btn-info" onclick="showUpdateContactById()">Update Contact by ID</button>
+                <button class="btn btn-danger" onclick="showDeleteContactById()">Delete Contact by ID</button>
             </div>
         </div>
 
@@ -39,90 +53,250 @@
 </div>
 
 <script>
-let accountsCache = {};
-
-function fetchAccountsCache(callback) {
-    if (Object.keys(accountsCache).length > 0) {
-        callback();
-        return;
+    // === Account Viewer Functions ===
+    function viewAllAccounts() {
+        $.get("/accounts", function(data) {
+            if (!Array.isArray(data)) return $('#output-area').html('<p>Error retrieving accounts.</p>');
+            let html = '<h4>All Accounts</h4><table class="table table-striped table-bordered"><thead><tr><th>ID</th><th>Name</th><th>Website</th><th>Revenue</th><th>Region</th></tr></thead><tbody>';
+            data.forEach(acc => {
+                html += `<tr><td>${acc.id}</td><td>${acc.name || ''}</td><td>${acc.website || ''}</td><td>${acc.revenue || ''}</td><td>${acc.region || ''}</td></tr>`;
+            });
+            html += '</tbody></table>';
+            $('#output-area').html(html);
+        });
     }
-    $.get("/accounts", function(data) {
-        data.forEach(acc => {
-            accountsCache[acc.id] = acc.name || '';
-        });
-        callback();
-    });
-}
 
-function showFindContactById() {
-    $('#output-area').html(`
-        <h4>Find Contact by ID</h4>
-        <input id="find-contact-id" type="number" class="form-control mb-2" placeholder="Enter Contact ID">
-        <button class="btn btn-primary" onclick="findContactById()">Find</button>
-        <div id="contact-result" class="mt-3"></div>
-    `);
-}
+    function showFindById() {
+        $('#output-area').html(`
+            <h4>Find Account by ID</h4>
+            <input id="find-id" type="number" class="form-control mb-2" placeholder="Enter Account ID" />
+            <button class="btn btn-secondary" onclick="findById()">Find</button>
+            <div id="result" class="mt-3"></div>
+        `);
+    }
 
-function findContactById() {
-    const id = $('#find-contact-id').val();
-    fetchAccountsCache(() => {
-        $.get(`/contacts/${id}`, function(contact) {
-            const accName = accountsCache[contact.account_id] || 'N/A';
-            const html = `<table class="table"><tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Account Name</th><th>Health Score</th></tr>
-                          <tr><td>${contact.id}</td><td>${contact.first_name}</td><td>${contact.last_name}</td><td>${contact.email}</td><td>${accName}</td><td>${contact.health_score ?? ''}</td></tr></table>`;
-            $('#contact-result').html(html);
-        }).fail(() => $('#contact-result').html('<div class="text-danger">Contact not found.</div>'));
-    });
-}
+    function findById() {
+        const id = $('#find-id').val();
+        $.get(`/accounts/${id}`, function(acc) {
+            const html = `<table class="table table-bordered"><tr><th>ID</th><th>Name</th><th>Website</th><th>Revenue</th><th>Region</th></tr>
+                          <tr><td>${acc.id}</td><td>${acc.name}</td><td>${acc.website}</td><td>${acc.revenue}</td><td>${acc.region}</td></tr></table>`;
+            $('#result').html(html);
+        }).fail(() => $('#result').html('<div class="text-danger">Account not found.</div>'));
+    }
 
-function showDeleteContactById() {
-    $('#output-area').html(`
-        <h4>Delete Contact by ID</h4>
-        <input id="delete-contact-id" type="number" class="form-control mb-2" placeholder="Enter Contact ID">
-        <button class="btn btn-danger" onclick="deleteContactById()">Delete</button>
-        <div id="delete-contact-result" class="mt-3"></div>
-    `);
-}
+    function showCreateAccount() {
+        $('#output-area').html(`
+            <h4>Create Account</h4>
+            <input id="create-name" type="text" class="form-control mb-2" placeholder="Name" />
+            <input id="create-website" type="text" class="form-control mb-2" placeholder="Website" />
+            <input id="create-revenue" type="text" class="form-control mb-2" placeholder="Revenue" />
+            <input id="create-region" type="text" class="form-control mb-2" placeholder="Region" />
+            <button class="btn btn-success" onclick="createAccount()">Create</button>
+            <div id="create-result" class="mt-3"></div>
+        `);
+    }
 
-function deleteContactById() {
-    const id = $('#delete-contact-id').val();
-    fetchAccountsCache(() => {
+    function createAccount() {
+        const payload = {
+            name: $('#create-name').val(),
+            website: $('#create-website').val(),
+            revenue: $('#create-revenue').val(),
+            region: $('#create-region').val()
+        };
         $.ajax({
-            url: `/contacts/${id}`,
-            method: 'DELETE',
-            success: function(res) {
-                const accName = accountsCache[res.account_id] || 'N/A';
-                const html = `<div class="text-success">Deleted Contact:</div>
-                              <table class="table"><tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Account Name</th><th>Health Score</th></tr>
-                              <tr><td>${res.id}</td><td>${res.first_name}</td><td>${res.last_name}</td><td>${res.email}</td><td>${accName}</td><td>${res.health_score ?? ''}</td></tr></table>`;
-                $('#delete-contact-result').html(html);
-            },
-            error: () => $('#delete-contact-result').html('<div class="text-danger">Deletion failed.</div>')
+            url: '/accounts',
+            method: 'POST',
+            data: JSON.stringify(payload),
+            contentType: 'application/json',
+            success: res => $('#create-result').html(`<div class="text-success">Account created. ID: ${res.id}</div>`),
+            error: err => $('#create-result').html(`<div class="text-danger">Creation failed.</div>`)
         });
-    });
-}
+    }
 
-function showUpdateContactById() {
-    fetchAccountsCache(() => {
-        let optionsHtml = '';
-        for (const id in accountsCache) {
-            optionsHtml += `<option value="${id}">${accountsCache[id]}</option>`;
+    function showUpdateById() {
+        $('#output-area').html(`
+            <h4>Update Account by ID</h4>
+            <input id="update-id" type="number" class="form-control mb-2" placeholder="ID" />
+            <input id="update-name" type="text" class="form-control mb-2" placeholder="Name" />
+            <input id="update-website" type="text" class="form-control mb-2" placeholder="Website" />
+            <input id="update-revenue" type="text" class="form-control mb-2" placeholder="Revenue" />
+            <input id="update-region" type="text" class="form-control mb-2" placeholder="Region" />
+            <button class="btn btn-info" onclick="updateById()">Update</button>
+            <div id="update-result" class="mt-3"></div>
+        `);
+    }
+
+    function updateById() {
+        const id = $('#update-id').val();
+        const payload = {
+            name: $('#update-name').val(),
+            website: $('#update-website').val(),
+            revenue: $('#update-revenue').val(),
+            region: $('#update-region').val()
+        };
+        $.ajax({
+            url: `/accounts/${id}`,
+            method: 'PUT',
+            data: JSON.stringify(payload),
+            contentType: 'application/json',
+            success: res => $('#update-result').html(`<div class="text-success">Account updated successfully.</div>`),
+            error: err => $('#update-result').html(`<div class="text-danger">Failed to update. Check if ID exists.</div>`)
+        });
+    }
+
+    function showDeleteById() {
+        $('#output-area').html(`
+            <h4>Delete Account by ID</h4>
+            <input id="delete-id" type="number" class="form-control mb-2" placeholder="Enter ID to delete" />
+            <button class="btn btn-danger" onclick="deleteById()">Delete</button>
+            <div id="delete-result" class="mt-3"></div>
+        `);
+    }
+
+    function deleteById() {
+        const id = $('#delete-id').val();
+        $.ajax({
+            url: `/accounts/${id}`,
+            method: 'DELETE',
+            success: res => $('#delete-result').html(`<div class="text-success">Account deleted.</div>`),
+            error: err => $('#delete-result').html(`<div class="text-danger">Delete failed. ID not found.</div>`)
+        });
+    }
+
+    // === Contact Viewer Functions ===
+    function viewAllContacts() {
+        $.get("/contacts", function(data) {
+            if (!Array.isArray(data)) return $('#output-area').html('<p>Error retrieving contacts.</p>');
+            let html = '<h4>All Contacts</h4><table class="table table-striped table-bordered"><thead><tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Account ID</th></tr></thead><tbody>';
+            data.forEach(contact => {
+                html += `<tr><td>${contact.id}</td><td>${contact.first_name || ''}</td><td>${contact.last_name || ''}</td><td>${contact.email || ''}</td><td>${contact.account_id || ''}</td></tr>`;
+            });
+            html += '</tbody></table>';
+            $('#output-area').html(html);
+        });
+    }
+
+    function showFindContactById() {
+        $('#output-area').html(`
+            <h4>Find Contact by ID</h4>
+            <input id="find-contact-id" type="number" class="form-control mb-2" placeholder="Enter Contact ID" />
+            <button class="btn btn-secondary" onclick="findContactById()">Find</button>
+            <div id="contact-find-result" class="mt-3"></div>
+        `);
+    }
+
+    function findContactById() {
+        const id = $('#find-contact-id').val();
+        if (!id) return alert('Please enter a Contact ID.');
+        $.get(`/contacts/${id}`, function(contact) {
+            const html = `<table class="table table-bordered"><tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Account ID</th></tr>
+                          <tr><td>${contact.id}</td><td>${contact.first_name}</td><td>${contact.last_name}</td><td>${contact.email}</td><td>${contact.account_id}</td></tr></table>`;
+            $('#contact-find-result').html(html);
+        }).fail(() => $('#contact-find-result').html('<div class="text-danger">Contact not found.</div>'));
+    }
+
+    function showCreateContact() {
+        $('#output-area').html(`
+            <h4>Create Contact</h4>
+            <input id="create-contact-first-name" type="text" class="form-control mb-2" placeholder="First Name" />
+            <input id="create-contact-last-name" type="text" class="form-control mb-2" placeholder="Last Name" />
+            <input id="create-contact-email" type="email" class="form-control mb-2" placeholder="Email" />
+            <input id="create-contact-account-id" type="number" class="form-control mb-2" placeholder="Account ID" />
+            <button class="btn btn-success" onclick="createContact()">Create</button>
+            <div id="create-contact-result" class="mt-3"></div>
+        `);
+    }
+
+    function createContact() {
+        const payload = {
+            first_name: $('#create-contact-first-name').val(),
+            last_name: $('#create-contact-last-name').val(),
+            email: $('#create-contact-email').val(),
+            account_id: $('#create-contact-account-id').val()
+        };
+        $.ajax({
+            url: '/contacts',
+            method: 'POST',
+            data: JSON.stringify(payload),
+            contentType: 'application/json',
+            success: res => $('#create-contact-result').html(`<div class="text-success">Contact created. ID: ${res.id}</div>`),
+            error: err => $('#create-contact-result').html(`<div class="text-danger">Creation failed.</div>`)
+        });
+    }
+
+    function showCreateDummyContacts() {
+        $('#output-area').html(`
+            <h4>Create Dummy Contacts</h4>
+            <label>Number of dummy contacts to create (max 100):</label>
+            <input id="dummy-count" type="number" class="form-control mb-2" min="1" max="100" value="1" />
+            <button class="btn btn-warning" onclick="createDummyContacts()">Create</button>
+            <div id="dummy-result" class="mt-3"></div>
+        `);
+    }
+
+    function createDummyContacts() {
+        let count = parseInt($('#dummy-count').val());
+        if (isNaN(count) || count < 1 || count > 100) {
+            alert('Please enter a valid number between 1 and 100.');
+            return;
         }
+        $.ajax({
+            url: `/contacts/dummy?count=${count}`,
+            method: 'POST',
+            success: res => $('#dummy-result').html(`<div class="text-success">${count} dummy contacts created.</div>`),
+            error: err => $('#dummy-result').html('<div class="text-danger">Failed to create dummy contacts.</div>')
+        });
+    }
+
+    function showUpdateContactById() {
         $('#output-area').html(`
             <h4>Update Contact by ID</h4>
-            <input id="update-contact-id" type="number" class="form-control mb-2" placeholder="Enter Contact ID">
-            <input id="update-contact-first-name" type="text" class="form-control mb-2" placeholder="First Name">
-            <input id="update-contact-last-name" type="text" class="form-control mb-2" placeholder="Last Name">
-            <input id="update-contact-email" type="email" class="form-control mb-2" placeholder="Email">
-            <select id="update-contact-account-id" class="form-control mb-2">
-                ${optionsHtml}
-            </select>
-            <input id="update-contact-health-score" type="number" step="0.01" class="form-control mb-2" placeholder="Health Score">
+            <input id="update-contact-id" type="number" class="form-control mb-2" placeholder="ID" />
+            <input id="update-contact-first-name" type="text" class="form-control mb-2" placeholder="First Name" />
+            <input id="update-contact-last-name" type="text" class="form-control mb-2" placeholder="Last Name" />
+            <input id="update-contact-email" type="email" class="form-control mb-2" placeholder="Email" />
+            <input id="update-contact-account-id" type="number" class="form-control mb-2" placeholder="Account ID" />
             <button class="btn btn-info" onclick="updateContactById()">Update</button>
             <div id="update-contact-result" class="mt-3"></div>
         `);
-    });
-}
+    }
+
+    function updateContactById() {
+        const id = $('#update-contact-id').val();
+        const payload = {
+            first_name: $('#update-contact-first-name').val(),
+            last_name: $('#update-contact-last-name').val(),
+            email: $('#update-contact-email').val(),
+            account_id: $('#update-contact-account-id').val()
+        };
+        $.ajax({
+            url: `/contacts/${id}`,
+            method: 'PUT',
+            data: JSON.stringify(payload),
+            contentType: 'application/json',
+            success: res => $('#update-contact-result').html(`<div class="text-success">Contact updated successfully.</div>`),
+            error: err => $('#update-contact-result').html(`<div class="text-danger">Failed to update. Check if ID exists.</div>`)
+        });
+    }
+
+    function showDeleteContactById() {
+        $('#output-area').html(`
+            <h4>Delete Contact by ID</h4>
+            <input id="delete-contact-id" type="number" class="form-control mb-2" placeholder="Enter ID to delete" />
+            <button class="btn btn-danger" onclick="deleteContactById()">Delete</button>
+            <div id="delete-contact-result" class="mt-3"></div>
+        `);
+    }
+
+    function deleteContactById() {
+        const id = $('#delete-contact-id').val();
+        $.ajax({
+            url: `/contacts/${id}`,
+            method: 'DELETE',
+            success: res => $('#delete-contact-result').html(`<div class="text-success">Contact deleted.</div>`),
+            error: err => $('#delete-contact-result').html(`<div class="text-danger">Delete failed. ID not found.</div>`)
+        });
+    }
 </script>
 </body>
 </html>
