@@ -119,7 +119,11 @@ class contactDAO:
             sql="delete from contact where id = %s"
             cursor.execute(sql, (id,))
             self.connection.commit()
-            return{"status": "deleted", "id": id}
+
+            if cursor.rowcount == 0:
+                return None  # No contact with that ID was found
+            else:
+                return {"status": "deleted", "id": id}
         except mysql.connector.Error as err:
             print(f"DB Error in deleteContact: {err}")
             return None

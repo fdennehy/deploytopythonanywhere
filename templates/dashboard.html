@@ -199,13 +199,20 @@
     }
 
     function updateById() {
-        const id = $('#update-id').val();
-        const payload = {
-            name: $('#update-name').val(),
-            website: $('#update-website').val(),
-            revenue: $('#update-revenue').val(),
-            region: $('#update-region').val()
-        };
+        const id = $('#update-id').val().trim();
+        const name = $('#update-name').val().trim();
+        const website = $('#update-website').val().trim();
+        const revenue = $('#update-revenue').val().trim();
+        const region = $('#update-region').val().trim();
+
+        // Simple validation
+        if (!id || !name || !website || !revenue || !region) {
+            $('#update-result').html('<div class="text-danger">Please fill in all fields before submitting.</div>');
+            return;
+        }
+
+    const payload = { name, website, revenue, region };
+
         $.ajax({
             url: `/accounts/${id}`,
             method: 'PUT',
@@ -406,15 +413,20 @@
     }
 
     function updateContactById() {
-        const id = $('#update-contact-id').val();
-        const payload = {
-            first_name: $('#update-contact-first-name').val(),
-            last_name: $('#update-contact-last-name').val(),
-            email: $('#update-contact-email').val(),
-            phone: $('#update-contact-phone').val(),
-            health_score: $('#update-contact-health_score').val(),
-            account_id: $('#update-contact-account-id').val()
+        const id = $('#update-contact-id').val().trim();
+        const firstName = $('#update-contact-first-name').val().trim();
+        const lastName = $('#update-contact-last-name').val().trim();
+        const email = $('#update-contact-email').val().trim();
+        const phone = $('#update-contact-phone').val().trim();
+        const healthScore = $('#update-contact-health_score').val().trim();
+        const accountId = $('#update-contact-account-id').val().trim();
+
+        // Simple field completeness check
+        if (!id || !firstName || !lastName || !email || !phone || !healthScore || !accountId) {
+            $('#update-contact-result').html('<div class="text-danger">Please fill in all fields before submitting.</div>');
+            return;
         };
+        
         $.ajax({
             url: `/contacts/${id}`,
             method: 'PUT',
