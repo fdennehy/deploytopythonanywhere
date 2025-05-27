@@ -178,7 +178,7 @@
             data: JSON.stringify(payload),
             contentType: 'application/json',
             success: res => {
-                $('#create-result').html(`<div class="text-success">Account created. ID: ${res.id}</div>`),
+                $('#create-result').html(`<div class="text-success">Account created. ID: ${res.id}</div>`);
                 fetchHealthScoreChartData();
             },
             error: err => $('#create-result').html(`<div class="text-danger">Creation failed.</div>`)
@@ -212,7 +212,7 @@
             data: JSON.stringify(payload),
             contentType: 'application/json',
             success: res => {
-                $('#update-result').html(`<div class="text-success">Account updated successfully.</div>`),
+                $('#update-result').html(`<div class="text-success">Account updated successfully.</div>`);
                 fetchHealthScoreChartData();
             },   
             error: err => $('#update-result').html(`<div class="text-danger">Failed to update. Check if ID exists.</div>`)
@@ -234,7 +234,7 @@
             url: `/accounts/${id}`,
             method: 'DELETE',
             success: res => {
-                $('#delete-result').html(`<div class="text-success">Account deleted.</div>`),
+                $('#delete-result').html(`<div class="text-success">Account deleted.</div>`);
                 fetchHealthScoreChartData();
             },
             error: err => $('#delete-result').html(`<div class="text-danger">Delete failed. ID not found.</div>`)
@@ -321,7 +321,7 @@
             return; // Stop further execution
         }
 
-            if (!isValidEmail(email)) {
+        if (!isValidEmail(email)) {
         $('#create-contact-result').html('<div class="text-danger">Please enter a valid email address.</div>');
         return;
         }
@@ -331,12 +331,12 @@
             return;
         }
 
-        if (!isValidHealthScore(health_score)) {
+        if (!isValidHealthScore(healthScore)) {
             $('#create-contact-result').html('<div class="text-danger">Health Score must be between 0 and 100.</div>');
             return;
         }
 
-        if (isNaN(Number(account_id)) || Number(account_id) <= 0) {
+        if (isNaN(Number(accountId)) || Number(account_id) <= 0) {
             $('#create-contact-result').html('<div class="text-danger">Account ID must be a positive number.</div>');
             return;
         }
@@ -356,7 +356,7 @@
             data: JSON.stringify(payload),
             contentType: 'application/json',
             success: res => {
-                $('#create-contact-result').html(`<div class="text-success">Contact created. ID: ${res.id}</div>`),
+                $('#create-contact-result').html(`<div class="text-success">Contact created. ID: ${res.id}</div>`);
                 fetchHealthScoreChartData();
             },
             error: err => $('#create-contact-result').html(`<div class="text-danger">Creation failed.</div>`)
@@ -383,7 +383,7 @@
             url: `/contacts/dummy?count=${count}`,
             method: 'POST',
             success: res => {
-                $('#dummy-result').html(`<div class="text-success">${count} dummy contacts created.</div>`),
+                $('#dummy-result').html(`<div class="text-success">${count} dummy contacts created.</div>`);
                 fetchHealthScoreChartData();
             },
             error: err => $('#dummy-result').html('<div class="text-danger">Failed to create dummy contacts.</div>')
@@ -421,7 +421,7 @@
             data: JSON.stringify(payload),
             contentType: 'application/json',
             success: res => {
-                $('#update-contact-result').html(`<div class="text-success">Contact updated successfully.</div>`),
+                $('#update-contact-result').html(`<div class="text-success">Contact updated successfully.</div>`);
                 fetchHealthScoreChartData();
             },
             error: err => $('#update-contact-result').html(`<div class="text-danger">Failed to update. Check if ID exists.</div>`)
@@ -443,7 +443,7 @@
             url: `/contacts/${id}`,
             method: 'DELETE',
             success: res => {
-                $('#delete-contact-result').html(`<div class="text-success">Contact deleted.</div>`),
+                $('#delete-contact-result').html(`<div class="text-success">Contact deleted.</div>`);
                 fetchHealthScoreChartData();
             },
             error: err => $('#delete-contact-result').html(`<div class="text-danger">Delete failed. ID not found.</div>`)
