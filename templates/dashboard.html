@@ -457,8 +457,8 @@
 
     function fetchHealthScoreChartData() {
         $.get('/accounts/insights', function(data) {
-            const labels = data.map(row => row.account_name);
-            const scores = data.map(row => row.avg_health_score);
+            const labels = data.map(row => row[0]);
+            const scores = data.map(row => Number(row[1]));
 
             const ctx = document.getElementById('healthScoreChart').getContext('2d');
 
