@@ -17,23 +17,6 @@
             width: 100%;
             margin-bottom: 8px;
         }
-                .collapsible-header {
-            cursor: pointer;
-        }
-        .collapsible-content {
-            display: none;
-        }
-        .chart-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-        }
-        #healthScoreChart {
-            width: 100% !important;
-            max-width: 500px;
-            height: auto !important;
-        }
     </style>
 </head>
 <body>
@@ -41,8 +24,7 @@
     <div class="row">
         <!-- Sidebar -->
         <div class="col-md-3 bg-light p-3">
-             <h4 class="collapsible-header" onclick="toggleMenu('account-menu', 'contact-menu')">Account Viewer</h4>
-            <div id="account-menu" class="collapsible-content">
+            <h4>Account Viewer</h4>
             <div class="btn-group-vertical w-100" role="group">
                 <button class="btn btn-primary" onclick="viewAllAccounts()">View All Accounts</button>
                 <button class="btn btn-secondary" onclick="showFindById()">Find Account by ID</button>
@@ -53,8 +35,8 @@
 
             <hr />
 
-            <h4 class="collapsible-header" onclick="toggleMenu('contact-menu', 'account-menu')">Contact Viewer</h4>
-            <div id="contact-menu" class="collapsible-content">
+            <h4>Contact Viewer</h4>
+            <div class="btn-group-vertical w-100" role="group">
                 <button class="btn btn-primary" onclick="viewAllContacts()">View All Contacts</button>
                 <button class="btn btn-secondary" onclick="showFindContactById()">Find Contact by ID</button>
                 <button class="btn btn-success" onclick="showCreateContact()">Create Contact</button>
@@ -72,8 +54,7 @@
         <!-- Insights Area -->
         <div class="col-md-3 p-3">
             <h5>Average Health Score per Account</h5>
-            <div class="chart-wrapper"></div>
-                <canvas id="healthScoreChart"></canvas>
+            <canvas id="healthScoreChart"></canvas>
         </div>
     </div>
 </div>
@@ -445,7 +426,7 @@
             $('#update-contact-result').html('<div class="text-danger">Please fill in all fields before submitting.</div>');
             return;
         };
-
+        
         $.ajax({
             url: `/contacts/${id}`,
             method: 'PUT',
@@ -521,24 +502,6 @@
             });
         });
     }
-
-    function toggleMenu(showId, hideId) {
-        const showMenu = $('#' + showId);
-        const hideMenu = $('#' + hideId);
-
-        if (!showMenu.is(':visible')) {
-            hideMenu.slideUp();
-            showMenu.slideDown();
-        }
-    }
-
-    $(document).ready(function() {
-        // Initially show both menus
-        $('#account-menu').show();
-        $('#contact-menu').show();
-
-        fetchHealthScoreChartData();
-    });
 
     // Load chart on page load
     $(document).ready(fetchHealthScoreChartData);
